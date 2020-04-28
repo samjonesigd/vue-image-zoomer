@@ -4,6 +4,11 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="description" content="Hover on image zoom component for Vue.js, that also works on touch devices.">
 		<title>Vue Hover Zoom</title>
+		<style type="text/css">
+			.img-fluid{
+				max-width: 100%
+			}
+		</style>
 	</head>
 	<body>
 		<div id="app">			
@@ -11,20 +16,25 @@
 				regular="https://samueljon.es/vue-image-zoom/img/sky.jpg" 
 				zoom="https://samueljon.es/vue-image-zoom/img/sky-zoom.jpg" 
 				:zoom-amount="3" 
-				img-class="img-fluid">				
+				image-class="img-fluid"
+				image-alt="Sky">				
 			</image-zoom>
 			<image-zoom 
 				regular="https://samueljon.es/vue-image-zoom/img/balls.jpg" 
 				zoom="https://samueljon.es/vue-image-zoom/img/balls-zoom.jpg"
 				hover-message="Custom hover message"
-				touch-message="Custom touch message">
+				touch-message="Custom touch message"
+				image-class="img-fluid"
+				image-alt="Ball pool">
 			</image-zoom>
 			<image-zoom 
 				regular="https://samueljon.es/vue-image-zoom/img/grass.jpg" 
 				zoom="https://samueljon.es/vue-image-zoom/img/grass-zoom.jpg" 
 				:zoom-amount="3"
-				:click-zoom="true">				
-			</image-zoom>			
+				:click-zoom="true"
+				image-class="img-fluid"
+				image-alt="Grass">				
+			</image-zoom>
 		</div>
 	</body>
 	<script type="text/javascript" src="js/app.js"></script>

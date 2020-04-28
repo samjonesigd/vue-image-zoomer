@@ -91,9 +91,9 @@
 </style>
 
 <template>
-	<div class="vue-hover-zoom-outer" v-cloak>
+	<div class="vue-hover-zoom-outer" v-cloak v-click-outside="isZoom">
 		<div class="vue-hover-zoom-holder" @mouseenter="isZoom(true)" @mouseleave="isZoom(false)" @mousemove="mousePos" ref="vue-hover-zoom-size" v-if="!touch && !clickZoom">
-			<img :src="options.regular" style="max-width:100%" :class="imgClass" />
+			<img :src="options.regular" :class="imageClass" :alt="options.imageAlt" />
 			<img 
 			v-if="zoomed" 
 			:src="options.zoom" 
@@ -105,7 +105,7 @@
 			</transition>			
 		</div>
 		<div class="vue-hover-zoom-holder" @click="isZoom(!zoomed)" @mousemove="mousePos" ref="vue-hover-zoom-size" v-else-if="!touch && clickZoom">
-			<img :src="options.regular" style="max-width:100%" :class="imgClass" />
+			<img :src="options.regular" :class="imageClass" :alt="options.imageAlt" />
 			<img 
 			v-if="zoomed" 
 			:src="options.zoom" 
@@ -117,7 +117,7 @@
 			</transition>			
 		</div>
 		<div class="vue-hover-zoom-holder" @click="isZoom(true)" ref="vue-hover-zoom-size" v-else>
-			<img :src="options.regular" style="max-width:100%" :class="imgClass" />
+			<img :src="options.regular" :class="imageClass" :alt="options.imageAlt" />
 			<img 
 			v-if="zoomed" 
 			:src="options.zoom" 
@@ -141,7 +141,21 @@
 </template>
 
 <script>
-import { debounce } from "debounce";
+Vue.directive('click-outside', {
+  bind: function (el, binding, vnode) {
+    el.clickOutsideEvent = function (event) {
+      // here I check that click was outside the el and his childrens
+      if (!(el == event.target || el.contains(event.target))) {
+        // and if it did, call method provided in attribute value
+        vnode.context[binding.expression](event);
+      }
+    };
+    document.body.addEventListener('click', el.clickOutsideEvent)
+  },
+  unbind: function (el) {
+    document.body.removeEventListener('click', el.clickOutsideEvent)
+  },
+});
 
 export default {
 
@@ -155,7 +169,8 @@ export default {
     			message: '<span class="vue-hover-zoom-icon">&#9906;</span> Hover to zoom',
     			clickMessage: '<span class="vue-hover-zoom-icon">&#9906;</span> Click to zoom',
     			touchMessage: '<span class="vue-hover-zoom-icon">&#9906;</span> Tap to zoom',
-    			imgClass: '',
+    			imageClass: '',
+    			imageAlt: 'Image zoom',
     			clickZoom: false,
     		},
     		touch: false,
@@ -178,17 +193,15 @@ export default {
     props: {
     	regular: String,
     	zoom: String,
-    	imgClass: String,
+    	imageClass: String,
+    	imageAlt: String,
     	zoomAmount: Number,
     	clickZoom: Boolean,
     	hoverMessage: String,
     	touchMessage: String,
-    	clickMessage: String
+    	clickMessage: String,
+    	closeZoom: Boolean,
     },
-
-    created() {
-    	window.addEventListener("resize", debounce(this.screenChanged,200));
-	},
 
     mounted(){    	
     	//check if touch screen
@@ -208,8 +221,11 @@ export default {
     	} else {
     		this.defaultZoom = true;
     	}
-    	if(this.imgClass){
-    		this.options.imgClass = this.imgClass;
+    	if(this.imageClass){
+    		this.options.imageClass = this.imageClass;
+    	} 
+    	if(this.imageAlt){
+    		this.options.imageAlt = this.imageAlt;
     	} 
     	if(this.clickZoom){
     		this.options.clickZoom = this.clickZoom;
@@ -293,11 +309,8 @@ export default {
 				this.zoomWidth = this.origX * this.options.zoomAmount;
 			}
 
-			//get offset of container
-			this.offsetLeft = window.pageXOffset + this.$refs['vue-hover-zoom-size'].getBoundingClientRect().left;
-			this.offsetTop = window.pageYOffset + this.$refs['vue-hover-zoom-size'].getBoundingClientRect().top;
-
-			if(!this.loaded || (this.screenSizeChanged && !this.zoomAmount)){
+			//only do this if we havent loaded the zoom before
+			if(!this.loaded){
 				this.loading = true;
 				this.screenSizeChanged = false;
 				//load zoom image
@@ -309,10 +322,15 @@ export default {
 					}
 					this.loaded = true;
 					this.loading = false; 
-					this.zoomed = true;					
+					this.zoomed = true;						
 				}.bind(this));
 			} else {
 				this.zoomed = true;
+
+				//get zoom amount for default zoom again as screen size may have changed
+				if(this.defaultZoom){
+					this.options.zoomAmount = this.zoomWidth / this.origX;
+				}
 			}
 		},
 		isZoom(type){			
@@ -324,7 +342,10 @@ export default {
 				this.loadZoom();
 			}
 		},
-		mousePos(e){				
+		mousePos(e){	
+					//get offset of container
+			this.offsetLeft = window.pageXOffset + this.$refs['vue-hover-zoom-size'].getBoundingClientRect().left;
+			this.offsetTop = window.pageYOffset + this.$refs['vue-hover-zoom-size'].getBoundingClientRect().top;
 			//set x and y of mouse in the container for the transform in style bind
 			if(!this.touch && !this.loading){		
 				this.x = (e.pageX - this.offsetLeft) * (this.options.zoomAmount - 1);
