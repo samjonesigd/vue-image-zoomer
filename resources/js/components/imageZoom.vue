@@ -141,7 +141,6 @@
 </template>
 
 <script>
-
 import { debounce } from "debounce";
 
 export default {
@@ -172,6 +171,7 @@ export default {
     		loaded: false,
     		loading: false,
     		defaultZoom: false,
+    		screenSizeChanged: false,
         };
     },
 
@@ -187,13 +187,8 @@ export default {
     },
 
     created() {
-    	window.addEventListener("resize", debounce(this.zoomImageSize,200));
+    	window.addEventListener("resize", debounce(this.screenChanged,200));
 	},
-	destroyed() {
-	  	window.removeEventListener("resize", this.zoomImageSize);
-	},
-	updated(){
-	  },
 
     mounted(){    	
     	//check if touch screen
@@ -228,11 +223,6 @@ export default {
     	if(this.clickMessage){
     		this.options.clickMessage = this.clickMessage;
     	}    
-
-    	//load regular image
-    	this.loadImage(this.regular, function() {
-		    this.zoomImageSize();
-		}.bind(this));
 
 		let sx,sy,cx=0,cy=0,touchobj=this.$refs['vue-hover-zoom-size'];
 
@@ -284,13 +274,16 @@ export default {
 		}.bind(this));
     },
 
-    methods: {    	
+    methods: { 
+    	screenChanged(){
+    		this.screenSizeChanged = true;
+    	},
     	loadImage(src, callback) {
 		    var sprite = new Image();
 		    sprite.onload = callback;
 		    sprite.src = src;
 		},
-		zoomImageSize(){	
+		loadZoom(){
 			//get width and height of container
 			this.origX = parseFloat(this.$refs['vue-hover-zoom-size'].offsetWidth);
 			this.origY = parseFloat(this.$refs['vue-hover-zoom-size'].offsetHeight);
@@ -298,16 +291,19 @@ export default {
 			//set zoom width if zoom amount option applied
 			if(!this.defaultZoom){
 				this.zoomWidth = this.origX * this.options.zoomAmount;
-			}		    		
-		},
-		loadZoom(){
-			if(!this.loaded){
-				this.loading = true;
+			}
 
+			//get offset of container
+			this.offsetLeft = window.pageXOffset + this.$refs['vue-hover-zoom-size'].getBoundingClientRect().left;
+			this.offsetTop = window.pageYOffset + this.$refs['vue-hover-zoom-size'].getBoundingClientRect().top;
+
+			if(!this.loaded || (this.screenSizeChanged && !this.zoomAmount)){
+				this.loading = true;
+				this.screenSizeChanged = false;
 				//load zoom image
 				this.loadImage(this.zoom, function(src) {
 					if(this.defaultZoom){
-						//if zoom amount not set, work it out from loaded zoom width
+						//if zoom amount not set, work it out from loaded zoom image width
 						this.zoomWidth = src.path[0].width;
 						this.options.zoomAmount = src.path[0].width / this.origX;
 					}
@@ -319,7 +315,7 @@ export default {
 				this.zoomed = true;
 			}
 		},
-		isZoom(type){
+		isZoom(type){			
 			//set zoomed to false
 			this.zoomed = false;
 
@@ -328,11 +324,7 @@ export default {
 				this.loadZoom();
 			}
 		},
-		mousePos(e){	
-			//get offset of container
-			this.offsetLeft = window.pageXOffset + this.$refs['vue-hover-zoom-size'].getBoundingClientRect().left;
-			this.offsetTop = window.pageYOffset + this.$refs['vue-hover-zoom-size'].getBoundingClientRect().top;
-
+		mousePos(e){				
 			//set x and y of mouse in the container for the transform in style bind
 			if(!this.touch && !this.loading){		
 				this.x = (e.pageX - this.offsetLeft) * (this.options.zoomAmount - 1);
