@@ -22,6 +22,7 @@
 		justify-content: center;
 		touch-action: manipulation;
 		cursor: zoom-in;
+		align-items: flex-start;
 	}
 	.vue-hover-zoom-zoom-image{
 		position:absolute;
