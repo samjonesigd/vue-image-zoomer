@@ -1,0 +1,36 @@
+{
+    "name": "vue-image-zoom",
+    "version": "1.7.2",
+    "description": "Image zoom component for Vue.js, that also works on touch devices.",
+    "keywords": [
+        "vue",
+        "vue2",
+        "image",
+        "zoom",
+        "product"
+    ],
+    "author": "Samuel Jones <hello@samueljon.es>",
+    "license": "MIT",
+    "main": "dist/vueImageZoom.js",
+    "homepage": "https://github.com/samjonesigd/vue-image-zoom#readme",
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:samjonesigd/vue-image-zoom.git"
+    },
+    "scripts": {
+        "dev": "npm run development",
+        "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+        "watch": "npm run development -- --watch",
+        "watch-poll": "npm run watch -- --watch-poll",
+        "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
+        "prod": "npm run production",
+        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+    },
+    "devDependencies": {
+        "laravel-mix": "^5.0.1",
+        "vue-template-compiler": "^2.6.11"
+    },
+    "dependencies": {
+        "vue": "^2.6.11"
+    }
+}
