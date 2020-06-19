@@ -14,7 +14,7 @@ Usage with Webpack or other module bundlers:
 
 ```js
 import Vue from 'vue';
-import imageZoom from '../../dist/vueImageZoom.js'
+import imageZoom from 'vue-image-zoomer'
 
 new Vue({
     el: '#app',
@@ -25,7 +25,7 @@ new Vue({
 
 // or
 
-const ImageZoom = require('vue-image-zoom').default
+const ImageZoom = require('vue-image-zoomer').default
 
 Vue.component('image-zoom', ImageZoom)
 ```
