@@ -95,64 +95,64 @@
 	<div class="vue-hover-zoom-outer" v-cloak v-click-outside="isZoom">
 		<div class="vue-hover-zoom-holder" @mouseenter="isZoom(true)" @mouseleave="isZoom(false)" @mousemove="mousePos" ref="vue-hover-zoom-size" v-if="!touch && !clickZoom">
 			<picture>
-				<source v-if="options.regular_webp" :srcset="options.regular_webp" type="image/webp">                    
-                <source :srcset="options.regular" type="image/jpeg">
-				<img :src="options.regular" :class="imageClass" :alt="options.imageAlt" />
+				<source v-if="regular_webp" :srcset="regular_webp" type="image/webp">                    
+                <source :srcset="regular" type="image/jpeg">
+				<img :src="regular" :class="imageClass" :alt="imageAlt" />
 			</picture>
 			<img 
-			v-if="zoomed && webp_supported && options.zoom_webp" 
-			:src="options.zoom_webp" 
+			v-if="zoomed && webp_supported && zoom_webp" 
+			:src="zoom_webp" 
 			class="vue-hover-zoom-zoom-image" 
 			:style="{width: zoomWidth + 'px', transform:'translate(-' + x + 'px,-' + y + 'px)'}" />
 			<img 
 			v-else-if="zoomed" 
-			:src="options.zoom" 
+			:src="zoom" 
 			class="vue-hover-zoom-zoom-image" 
 			:style="{width: zoomWidth + 'px', transform:'translate(-' + x + 'px,-' + y + 'px)'}" />
 			<transition name="vueHoverZoomFade">
-				<div class="vue-hover-zoom-message" v-if="!zoomed && !loading" v-html="options.message">
+				<div class="vue-hover-zoom-message" v-if="!zoomed && !loading" v-html="hoverMessage">
 				</div>
 			</transition>			
 		</div>
 		<div class="vue-hover-zoom-holder" @click="isZoom(!zoomed)" @mousemove="mousePos" ref="vue-hover-zoom-size" v-else-if="!touch && clickZoom">
 			<picture>
-				<source v-if="options.regular_webp" :srcset="options.regular_webp" type="image/webp">                    
-                <source :srcset="options.regular" type="image/jpeg">
-				<img :src="options.regular" :class="imageClass" :alt="options.imageAlt" />
+				<source v-if="regular_webp" :srcset="regular_webp" type="image/webp">                    
+                <source :srcset="regular" type="image/jpeg">
+				<img :src="regular" :class="imageClass" :alt="imageAlt" />
 			</picture>
 			<img 
-			v-if="zoomed && webp_supported && options.zoom_webp" 
-			:src="options.zoom_webp" 
+			v-if="zoomed && webp_supported && zoom_webp" 
+			:src="zoom_webp" 
 			class="vue-hover-zoom-zoom-image" 
 			:style="{width: zoomWidth + 'px', transform:'translate(-' + x + 'px,-' + y + 'px)'}" />
 			<img 
 			v-else-if="zoomed" 
-			:src="options.zoom" 
+			:src="zoom" 
 			class="vue-hover-zoom-zoom-image" 
 			:style="{width: zoomWidth + 'px', transform:'translate(-' + x + 'px,-' + y + 'px)'}" />
 			<transition name="vueHoverZoomFade">
-				<div class="vue-hover-zoom-message" v-if="!zoomed && !loading" v-html="options.clickMessage">
+				<div class="vue-hover-zoom-message" v-if="!zoomed && !loading" v-html="clickMessage">
 				</div>
 			</transition>			
 		</div>
 		<div class="vue-hover-zoom-holder" @click="isZoom(true)" ref="vue-hover-zoom-size" v-else>
 			<picture>
-				<source v-if="options.regular_webp" :srcset="options.regular_webp" type="image/webp">                    
-                <source :srcset="options.regular" type="image/jpeg">
-				<img :src="options.regular" :class="imageClass" :alt="options.imageAlt" />
+				<source v-if="regular_webp" :srcset="regular_webp" type="image/webp">                    
+                <source :srcset="regular" type="image/jpeg">
+				<img :src="regular" :class="imageClass" :alt="imageAlt" />
 			</picture>
 			<img 
-			v-if="zoomed && webp_supported && options.zoom_webp" 
-			:src="options.zoom_webp" 
+			v-if="zoomed && webp_supported && zoom_webp" 
+			:src="zoom_webp" 
 			class="vue-hover-zoom-zoom-image" 
 			:style="'width:' + zoomWidth + 'px;transform:' + touchPosition" />
 			<img 
 			v-else-if="zoomed"
-			:src="options.zoom" 
+			:src="zoom" 
 			class="vue-hover-zoom-zoom-image" 
 			:style="'width:' + zoomWidth + 'px;transform:' + touchPosition" />
 			<transition name="vueHoverZoomFade">
-				<div class="vue-hover-zoom-message" v-if="!zoomed && !loading" v-html="options.touchMessage">
+				<div class="vue-hover-zoom-message" v-if="!zoomed && !loading" v-html="touchMessage">
 				</div>
 			</transition>			
 		</div>
@@ -169,40 +169,31 @@
 </template>
 
 <script>
-Vue.directive('click-outside', {
-  bind: function (el, binding, vnode) {
-    el.clickOutsideEvent = function (event) {
-      // here I check that click was outside the el and his childrens
-      if (!(el == event.target || el.contains(event.target))) {
-        // and if it did, call method provided in attribute value
-        vnode.context[binding.expression](event);
-      }
-    };
-    document.body.addEventListener('click', el.clickOutsideEvent)
-  },
-  unbind: function (el) {
-    document.body.removeEventListener('click', el.clickOutsideEvent)
-  },
-});
 
 export default {
 
+	name: 'ImageZoom', 
+
+	directives: {
+	  	clickOutside: {
+	    bind: function (el, binding, vnode) {
+		    el.clickOutsideEvent = function (event) {
+		      	// here I check that click was outside the el and his childrens
+		      	if (!(el == event.target || el.contains(event.target))) {
+		        	// and if it did, call method provided in attribute value
+		        	vnode.context[binding.expression](event);
+		      	}
+		    };
+		    document.body.addEventListener('click', el.clickOutsideEvent)
+		  	},
+		  	unbind: function (el) {
+		    	document.body.removeEventListener('click', el.clickOutsideEvent)
+		  	},
+	  	}
+	},
+
     data() {
-        return {    
-        	options: {
-    			regular: false,
-    			regular_webp: false,
-    			zoom: false,
-    			zoom_webp: false,
-    			zoomAmount: 1,
-    			class: false,
-    			message: '<span class="vue-hover-zoom-icon">&#9906;</span> Hover to zoom',
-    			clickMessage: '<span class="vue-hover-zoom-icon">&#9906;</span> Click to zoom',
-    			touchMessage: '<span class="vue-hover-zoom-icon">&#9906;</span> Tap to zoom',
-    			imageClass: false,
-    			imageAlt: 'Image zoom',
-    			clickZoom: false,
-    		},
+        return { 
     		touch: false,
     		zoomed: false,
     		x: 0,
@@ -213,9 +204,13 @@ export default {
     		offsetLeft: 0,
     		offsetTop: 0,
     		zoomWidth: 0,
+
+    		options:{
+    			zoomAmount: 0,
+    		},
+
     		loaded: false,
     		loading: false,
-    		defaultZoom: false,
     		webp_supported: false,
         };
     },
@@ -227,12 +222,23 @@ export default {
     	zoom_webp: String,
     	imageClass: String,
     	imageAlt: String,
-    	zoomAmount: Number,
+    	zoomAmount:  {
+    		type: Number,
+    		default: 0
+    	},
     	clickZoom: Boolean,
-    	hoverMessage: String,
-    	touchMessage: String,
-    	clickMessage: String,
-    	closeZoom: Boolean,
+    	hoverMessage: {
+    		type: String,
+    		default: '<span class="vue-hover-zoom-icon">&#9906;</span> Hover to zoom'
+    	},
+    	touchMessage: {
+    		type: String,
+    		default: '<span class="vue-hover-zoom-icon">&#9906;</span> Click to zoom'
+    	},
+    	clickMessage: {
+    		type: String,
+    		default: '<span class="vue-hover-zoom-icon">&#9906;</span> Tap to zoom'
+    	}, 
     },
 
     mounted(){   
@@ -242,47 +248,12 @@ export default {
 		    }
 		}.bind(this));
 
+		this.options.zoomAmount = this.zoomAmount;
+
     	//check if touch screen
     	if('ontouchstart' in window || navigator.msMaxTouchPoints){
     		this.touch = true;
-    	}
-
-    	//load options
-    	if(this.regular){
-    		this.options.regular = this.regular;
-    	}
-    	if(this.regular_webp){
-    		this.options.regular_webp = this.regular_webp;
-    	}
-    	if(this.zoom){
-    		this.options.zoom = this.zoom;
-    	}
-    	if(this.zoom_webp){
-    		this.options.zoom_webp = this.zoom_webp;
-    	}
-    	if(this.zoomAmount){
-    		this.options.zoomAmount = this.zoomAmount;
-    	} else {
-    		this.defaultZoom = true;
-    	}
-    	if(this.imageClass){
-    		this.options.imageClass = this.imageClass;
-    	} 
-    	if(this.imageAlt){
-    		this.options.imageAlt = this.imageAlt;
-    	} 
-    	if(this.clickZoom){
-    		this.options.clickZoom = this.clickZoom;
     	}  
-    	if(this.hoverMessage){
-    		this.options.message = this.hoverMessage;
-    	}  
-    	if(this.touchMessage){
-    		this.options.touchMessage = this.touchMessage;
-    	}  
-    	if(this.clickMessage){
-    		this.options.clickMessage = this.clickMessage;
-    	}    
 
 		let sx,sy,cx=0,cy=0,touchobj=this.$refs['vue-hover-zoom-size'];
 
@@ -313,7 +284,7 @@ export default {
 		 			this.x = -1;
 		 		}
 		 		if(touchmovement.pageY-sy <= (this.origY - (this.options.zoomAmount * this.origY))){
-		 			this.y = this.origY - (this.options.zoomAmount * this.origY);
+		 			this.y = this.origY - (this.options.zoomAmount * this.origY); 
 		 		}
 		 		if(touchmovement.pageY-sy >= 0){
 		 			this.y = -1;
@@ -360,7 +331,7 @@ export default {
 			this.origY = parseFloat(this.$refs['vue-hover-zoom-size'].offsetHeight);
 
 			//set zoom width if zoom amount option applied
-			if(!this.defaultZoom){
+			if(this.options.zoomAmount != 0){
 				this.zoomWidth = this.origX * this.options.zoomAmount;
 			}
 
@@ -369,12 +340,12 @@ export default {
 				this.loading = true;
 
 				//load zoom image
-				let zoomToLoad = this.options.zoom;
-				if(this.webp_supported && this.options.zoom_webp){
-					zoomToLoad = this.options.zoom_webp;
+				let zoomToLoad = this.zoom;
+				if(this.webp_supported && this.zoom_webp){
+					zoomToLoad = this.zoom_webp;
 				}
 				this.loadImage(zoomToLoad, function(src) {
-					if(this.defaultZoom){
+					if(this.options.zoomAmount == 0){
 						//if zoom amount not set, work it out from loaded zoom image width
 						this.zoomWidth = src.target.width;
 						this.options.zoomAmount = src.target.width / this.origX;
@@ -387,7 +358,7 @@ export default {
 				this.zoomed = true;
 
 				//get zoom amount for default zoom again as screen size may have changed
-				if(this.defaultZoom){
+				if(this.options.zoomAmount == 0){
 					this.options.zoomAmount = this.zoomWidth / this.origX;
 				}
 			}
@@ -407,13 +378,13 @@ export default {
 			this.offsetTop = window.pageYOffset + this.$refs['vue-hover-zoom-size'].getBoundingClientRect().top;
 			//set x and y of mouse in the container for the transform in style bind
 			if(!this.touch && !this.loading){	
-				if(!this.loaded && this.defaultZoom){
+				if(!this.loaded && this.options.zoomAmount == 0){
 					this.origX = parseFloat(this.$refs['vue-hover-zoom-size'].offsetWidth);
 					this.origY = parseFloat(this.$refs['vue-hover-zoom-size'].offsetHeight);
 					
-					let zoomToLoad = this.options.zoom;
-					if(this.webp_supported && this.options.zoom_webp){
-						zoomToLoad = this.options.zoom_webp;
+					let zoomToLoad = this.zoom;
+					if(this.webp_supported && this.zoom_webp){
+						zoomToLoad = this.zoom_webp;
 					}
 					this.loadImage(zoomToLoad, function(src) {
 						this.zoomWidth = src.target.width;

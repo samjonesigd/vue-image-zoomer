@@ -4,6 +4,7 @@ max-manifest.json
 package-lock.json
 package.json
 webpack.mix.js
-src/img/
+public/img
 resources/js/app.js
+dist
 .git

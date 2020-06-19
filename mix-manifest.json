@@ -1,4 +1,4 @@
 {
-    "/src/js/app.js": "/src/js/app.js",
-    "/src/js/imageZoom.js": "/src/js/imageZoom.js"
+    "/dist/vueImageZoom.js": "/dist/vueImageZoom.js",
+    "/public/js/app.js": "/public/js/app.js"
 }
