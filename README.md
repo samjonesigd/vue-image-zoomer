@@ -1,4 +1,4 @@
-# Vue Hover Zoom
+# Vue Image Zoomer
 
 Image zoom component for Vue.js, that also works on touch devices.
 
