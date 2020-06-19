@@ -2,7 +2,7 @@
 
 Image zoom component for Vue.js, that also works on touch devices.
 
-Demo: https://samueljon.es/vue-image-zoom
+Demo: https://samueljon.es/vue-image-zoomer
 
 ## Installation
 
