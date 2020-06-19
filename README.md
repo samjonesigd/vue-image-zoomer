@@ -7,7 +7,7 @@ Demo: https://samueljon.es/vue-image-zoomer
 ## Installation
 
 ```sh
-npm i vue-image-zoom
+npm i vue-image-zoomer
 ```
 
 Usage with Webpack or other module bundlers:
