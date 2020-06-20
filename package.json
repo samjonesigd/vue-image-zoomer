@@ -1,6 +1,6 @@
 {
     "name": "vue-image-zoomer",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "Image zoom/magnify component for Vue.js, that also works on touch devices.",
     "keywords": [
         "vue",
