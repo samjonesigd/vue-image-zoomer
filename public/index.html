@@ -20,14 +20,6 @@
 				alt="Sky">				
 			</image-zoom>
 			<image-zoom 
-				regular="img/balls.jpg" 
-				zoom="img/balls-zoom.jpg"
-				hover-message="Custom hover message"
-				touch-message="Custom touch message"
-				img-class="img-fluid"
-				alt="Ball pool">
-			</image-zoom>
-			<image-zoom 
 				regular="img/grass.jpg" 
 				zoom="img/grass-zoom.jpg" 
 				:zoom-amount="3"
@@ -35,7 +27,24 @@
 				img-class="img-fluid"
 				alt="Grass">		
 			</image-zoom>
+			<image-zoom 
+				regular="img/balls.jpg" 
+				zoom="img/balls-zoom.jpg"
+				hover-message="Custom hover message"
+				touch-message="Custom touch message"
+				img-class="img-fluid"
+				alt="Ball pool">
+			</image-zoom>			
 		</div>
 	</body>
 	<script type="text/javascript" src="js/app.js"></script>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-63275941-1"></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+
+	  gtag('config', 'UA-63275941-1');
+	</script>
 </html>
