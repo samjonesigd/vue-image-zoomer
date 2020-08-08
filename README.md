@@ -4,7 +4,7 @@ Responsive image zoom component for Vue.js 2, that also works on touch devices. 
 
 Works on hover(default) or click on mouse devices, tap to zoom on touch screens.
 
-Performace and pageload is important, zoom images do not load until needed, so only the regular sized images load on pageload. Webp format also available with jpg/png backwards compatabilty for browsers that do not yet support webp.
+Performance and pageload is important, zoom images do not load until needed, so only the regular sized images load on pageload. Webp format also available with jpg/png backwards compatabilty for browsers that do not yet support webp.
 
 Demo: https://samueljon.es/vue-image-zoomer
 
