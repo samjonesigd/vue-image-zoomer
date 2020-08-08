@@ -39,16 +39,19 @@ Vue.component('image-zoom', ImageZoom)
 ## Usage examples
 
 ```html
+<!-- jpg example -->
 <image-zoom 
 	regular="path-to-regular.jpg" 
 	zoom="path-to-zoom.jpg">				
 </image-zoom>
 
+<!-- png example -->
 <image-zoom 
 	regular="path-to-regular.png" 
 	zoom="path-to-zoom.png">				
 </image-zoom>
 
+<!-- webp example -->
 <image-zoom 
 	regular="path-to-regular.jpg" 
 	regular-webp="path-to-regular.webp"
