@@ -1,6 +1,6 @@
 # Vue Image Zoomer
 
-Responsive image zoom component for Vue.js 2.0, that also works on touch devices. Perfect for zooming on product images on an ecommerce website.
+Responsive image zoom component for Vue.js 2, that also works on touch devices. Perfect for zooming on product images on an ecommerce website.
 
 Works on hover(default) or click on mouse devices, tap to zoom on touch screens.
 
