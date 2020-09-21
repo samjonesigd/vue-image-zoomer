@@ -67,6 +67,11 @@ Vue.component('image-zoom', ImageZoom)
 </image-zoom>
 ```
 
+## Carousel/Slider
+
+Tested & works very well with Vue Carousel. Untested on others.
+https://www.npmjs.com/package/vue-carousel
+
 ## Options
 
 The following props can be added to the html above
