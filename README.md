@@ -4,7 +4,9 @@ Responsive image zoom component for Vue.js 2, that also works on touch devices. 
 
 Works on hover(default) or click on mouse devices, tap to zoom on touch screens.
 
-Performance and pageload is important, zoom images do not load until needed, so only the regular sized images load on pageload. Webp format also available with jpg/png backwards compatabilty for browsers that do not yet support webp.
+Performance and pageload is important, zoom images do not load until needed, so only the regular sized images load on pageload. Webp format also available with jpg/png backwards compatabilty for browsers that do not yet support webp. 
+
+Zoom source is not needed but recommended for a sharper zoom, if there is no zoom image selected then the regular image will be zoomed by 2 by default.
 
 Demo: https://samueljon.es/vue-image-zoomer
 
@@ -51,6 +53,11 @@ Vue.component('image-zoom', ImageZoom)
 	zoom="path-to-zoom.png">				
 </image-zoom>
 
+<!-- Example without zoom image -->
+<image-zoom 
+	regular="path-to-regular.jpg">				
+</image-zoom>
+
 <!-- webp example -->
 <image-zoom 
 	regular="path-to-regular.jpg" 
@@ -74,9 +81,9 @@ The following props can be added to the html above
 | regular            | String |    | **Required** Path to the regular image source|
 | regular-webp            | String |    | Path to the regular webp image source, regular option will default as backup if browser doesn't support webp|
 | touch-message            | String | <span class="vue-hover-zoom-icon">&#9906;</span> Tap to zoom   | To change the message that appears on top of the image before you tap to zoom on a touch screen, accepts html|
-| zoom            | String |    | **Required** Path to the zoom image source|
-| zoom-amount            | Number |    | Amount you want the zoom image to zoom by e.g. '2' would be 2 times as large as the regular image's dom size. Zoom is defaulted to be the size of the zoom image source|
-| zoom-webp            | String |    | Path to the zoom webp image source, zoom option will default as backup if browser doesn't support webp|
+| zoom            | String |  Regular image  | **Recommended** Path to the zoom image source. If zoom not selected then will use the regular image times by 2.|
+| zoom-amount            | Number |    | Amount you want the zoom image to zoom by e.g. '2' would be 2 times as large as the regular image's dom size. Zoom is defaulted to be the size of the zoom image source, if there is not zoom image source then default zoom is 2|
+| zoom-webp            | String |    | Path to the zoom webp image source, zoom option will default as backup if browser doesn't support webp. Zoom webp will be regular webp image if nothing is selected for zoom webp but there's a regular webp image|
 
 ## License
 
