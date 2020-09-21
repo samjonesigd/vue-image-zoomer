@@ -4,6 +4,6 @@ mix-manifest.json
 package-lock.json
 webpack.mix.js
 public/img
-dist
+dist/vueImageZoom.js.LICENSE.txt
 .git
 resources
