@@ -155,7 +155,7 @@ The following props can be added to the html above
 | Property                    | Type    | Default | Description|
 |:----------------------------|:--------|:--------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | alt            | String |    | Alt tag for regular image|
-| breakpoints            | String |    | Array of objects that allows you to have different images on different screen sizes. Example is shown above, width and regular parameters are needed when using this, adition optional parameters are; regularWebp, zoom, zoomWebp |
+| breakpoints            | Array |    | Array of objects that allows you to have different images on different screen sizes. Example is shown above, width and regular parameters are needed when using this, adition optional parameters are; regularWebp, zoom, zoomWebp |
 | click-zoom            | Boolean | false   | Click to zoom instead of hover to zoom which is default|
 | click-message            | String | <span class="vue-hover-zoom-icon">&#9906;</span> Click to zoom   | To change the message that appears on top of the image before you zoom when clixk-zoom is set to true, accepts html|
 | hover-message            | String | <span class="vue-hover-zoom-icon">&#9906;</span> Hover to zoom   | To change the message that appears on top of the image before you hover to zoom, accepts html|
