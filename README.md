@@ -71,9 +71,9 @@ Vue.component('image-zoom', ImageZoom)
 
 Tested & works very well with [Vue Carousel](https://www.npmjs.com/package/vue-carousel). Untested on others.
 
-## Lazyloading
+## Lazy Loading
 
-Zoom images automatically lazy load when they activated. [Lazysizes](https://www.npmjs.com/package/lazysizes) package is used to lazyload regular image. 'lazyload-placeholder' is optional when lazyloading the regular image. Lazysizes package comes with this package.
+The zoom images automatically lazy loads when they activated. The [Lazysizes](https://www.npmjs.com/package/lazysizes) package is used if you want to lazyload the regular image. 'lazyload-placeholder' is optional when lazyloading. Lazysizes package comes with this package.
 
 ```js
 import Vue from 'vue';
@@ -101,9 +101,9 @@ new Vue({
 
 This option is an array of objects that allows you to have different images on different screen sizes. For example to load a higher res image on desktop. 
 
-In the example below, browser width 1200px or above will show black &amp; white sky image, 992 and above will show sky inverted. Below 992px will be original sky image set. Width order must start from highest min width.
+Order of the objects must start from highest min width, e.g. in the example below we start with the 1200 min width then 992. This is the min width of the browser in pixels when that breakpoint will show.
 
-Like without breakpoints, if using breakpoints the zoom parameters aren't required but recommended for a higher quality zoom image, width and regular parameters are required. Addition parameters to the array are 'regularWebp' and 'zoomWebp' if using webp images(will be defaulted to standard if browser does not support webp).
+Like without breakpoints, if using breakpoints, the zoom parameters aren't required but recommended for a higher quality zoom image, width and regular parameters are **required**. Addition parameters to the array are 'regularWebp' and 'zoomWebp' if using webp images(will be defaulted to standard if browser does not support webp).
 
 ```html
 <image-zoom 
