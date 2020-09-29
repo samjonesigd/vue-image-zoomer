@@ -28,7 +28,7 @@
 	</head>
 	<body>
 		<h1>Vue Image Zoomer</h1>
-		<p>Responsive image zoom component for Vue.js 2, that also works on touch devices. Perfect for zooming on product images on an ecommerce website.</p>
+		<p>Lightweight responsive image zoom component for Vue.js 2, that also works on touch devices. Perfect for zooming on product images on an ecommerce website.</p>
 		<p><a href="https://www.npmjs.com/package/vue-carousel">View on NPM</a></p>
 		<div id="app">
 		<h2>Default Hover Zoom</h2>
@@ -115,7 +115,55 @@
 					img-class="img-fluid"
 					alt="Ball pool">
 				</image-zoom>
-			</div>			
+			</div>
+		<h2>Breakpoints</h2>
+		<p>Browser width 1200px or above will show black &amp; white sky image, 992 and above will show sky inverted. Below 992px will be original sky image set.</p>
+		<p>Width order must start from highest min width.</p>
+<div>
+<pre v-pre>
+&lt;image-zoom 
+    regular="img/sky.jpg" 
+    zoom="img/sky-zoom.jpg" 
+    :zoom-amount="3" 
+    img-class="img-fluid"
+    alt="Sky"
+    :breakpoints="[
+	{
+	    width: 1200,
+	    regular: 'img/sky-bw.jpg',
+	    zoom: 'img/sky-zoom-bw.jpg'
+	},
+	{
+	    width: 992,
+	    regular: 'img/sky-inverted.jpg',
+	    zoom: 'img/sky-zoom-inverted.jpg'
+	}						
+    ]
+&gt;				
+&lt;/image-zoom&gt;
+</pre>
+</div>
+			<div>			
+				<image-zoom 
+					regular="img/sky.jpg" 
+					zoom="img/sky-zoom.jpg" 
+					:zoom-amount="3" 
+					img-class="img-fluid"
+					alt="Sky"
+					:breakpoints="[
+						{
+							width: 1200,
+							regular: 'img/sky-bw.jpg',
+							zoom: 'img/sky-zoom-bw.jpg'
+						},
+						{
+							width: 992,
+							regular: 'img/sky-inverted.jpg',
+							zoom: 'img/sky-zoom-inverted.jpg'
+						}						
+					]">				
+				</image-zoom>
+			</div>
 		</div>
 	</body>
 	<script type="text/javascript" src="js/app.js?v=1"></script>
