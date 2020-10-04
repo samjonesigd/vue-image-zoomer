@@ -364,7 +364,7 @@ export default {
 			}.bind(this));
 		},
 		isZoom(type, action){
-			if((action == 'hover' && !this.clickZoom) || (action == 'click' && this.clickZoom) || (action == 'touch' && this.touch)){
+			if((action == 'hover' && !this.clickZoom) || (action == 'click' && this.clickZoom) || (action == 'touch' && this.touch) || !action){
 				//set zoomed to false
 				this.zoomed = false;
 				//if true passed load the zoom image
