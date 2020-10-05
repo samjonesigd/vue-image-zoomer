@@ -65,11 +65,12 @@
 </div>
 			<div>			
 				<image-zoom 
-					regular="img/sky.jpg" 
+					:regular="url" 
 					img-class="img-fluid"
 					alt="Sky">				
 				</image-zoom>
 			</div>
+			<button @click="url='img/grass.jpg'">change image</button>
 			<h2>Click To Zoom</h2>
 <div>
 <pre v-pre>
@@ -166,7 +167,7 @@
 			</div>
 		</div>
 	</body>
-	<script type="text/javascript" src="js/app.js?v=2"></script>
+	<script type="text/javascript" src="js/app.js?v=4"></script>
 	<!-- Global site tag (gtag.js) - Google Analytics -->
 	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-63275941-1"></script>
 	<script>
