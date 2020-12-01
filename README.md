@@ -156,14 +156,14 @@ The following props can be added to the html above
 |:----------------------------|:--------|:--------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | alt            | String |    | Alt tag for regular image|
 | breakpoints            | Array |    | Array of objects that allows you to have different images on different screen sizes. Example is shown above, width and regular parameters are needed when using this, adition optional parameters are; regularWebp, zoom, zoomWebp |
-| close-pos            | String | top-left   | Position of the close button on mobile: top-left, top-right, bottom-left, bottom-right|
+| close-pos            | String | top-left   | Position of the close button on mobile: **top-left, top-right, bottom-left, bottom-right**|
 | click-zoom            | Boolean | false   | Click to zoom instead of hover to zoom which is default|
 | click-message            | String | <span class="vue-hover-zoom-icon">&#9906;</span> Click to zoom   | To change the message that appears on top of the image before you zoom when click-zoom is set to true, accepts html|
 | hover-message            | String | <span class="vue-hover-zoom-icon">&#9906;</span> Hover to zoom   | To change the message that appears on top of the image before you hover to zoom, accepts html|
 | img-class            | String |    | Class for regular image, e.g. 'img-fluid' in bootstrap|
 | lazyload            | Boolean |  false  | To lazyload the regular image, you need to import lazysizes for this to work|
 | lazyload-placeholder            | String |    | If you want a placeholder image when using lazyload|
-| message-position            | String |  bottom  | Position of the message that appears on top of the image before you zoom: top, bottom|
+| message-position            | String |  bottom  | Position of the message that appears on top of the image before you zoom: **Rtop, bottom**|
 | regular            | String |    | **Required** Path to the regular image source|
 | regular-webp            | String |    | Path to the regular webp image source, regular option will default as backup if browser doesn't support webp|
 | touch-message            | String | <span class="vue-hover-zoom-icon">&#9906;</span> Tap to zoom   | To change the message that appears on top of the image before you tap to zoom on a touch screen, accepts html|
