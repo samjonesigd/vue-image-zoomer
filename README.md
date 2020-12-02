@@ -163,9 +163,11 @@ The following props can be added to the html above
 | img-class            | String |    | Class for regular image, e.g. 'img-fluid' in bootstrap|
 | lazyload            | Boolean |  false  | To lazyload the regular image, you need to import lazysizes for this to work|
 | lazyload-placeholder            | String |    | If you want a placeholder image when using lazyload|
-| message-position            | String |  bottom  | Position of the message that appears on top of the image before you zoom: **top, bottom**|
+| message-pos            | String |  bottom  | Position of the message that appears on top of the image before you zoom: **top, bottom**|
 | regular            | String |    | **Required** Path to the regular image source|
 | regular-webp            | String |    | Path to the regular webp image source, regular option will default as backup if browser doesn't support webp|
+| show-message            | Boolean | true   | Set to false to hide zoom message on non-touch devices |
+| show-message-touch            | Boolean | true   | Set to false to hide zoom message on touch devices |
 | touch-message            | String | <span class="vue-hover-zoom-icon">&#9906;</span> Tap to zoom   | To change the message that appears on top of the image before you tap to zoom on a touch screen, accepts html|
 | zoom            | String |  Regular image  | **Recommended** Path to the zoom image source. If zoom not selected then will use the regular image times by 2.|
 | zoom-amount            | Number |    | Amount you want the zoom image to zoom by e.g. '2' would be 2 times as large as the regular image's dom size. Zoom is defaulted to be the size of the zoom image source, if there is not zoom image source then default zoom is 2|
