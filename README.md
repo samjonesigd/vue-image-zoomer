@@ -169,6 +169,7 @@ The following props can be added to the html above
 | show-message            | Boolean | true   | Set to false to hide zoom message on non-touch devices |
 | show-message-touch            | Boolean | true   | Set to false to hide zoom message on touch devices |
 | touch-message            | String | <span class="vue-hover-zoom-icon">&#9906;</span> Tap to zoom   | To change the message that appears on top of the image before you tap to zoom on a touch screen, accepts html|
+| touch-zoom-pos            | Array | [0.5, 0.5]   | X & Y position from top left of where the zoom starts on touch devices e.g. `[0.5, 0.5]` the default, is center, `[0, 0]` is top left. Max value is 1, min value is 0. |
 | zoom            | String |  Regular image  | **Recommended** Path to the zoom image source. If zoom not selected then will use the regular image times by 2.|
 | zoom-amount            | Number |    | Amount you want the zoom image to zoom by e.g. '2' would be 2 times as large as the regular image's dom size. Zoom is defaulted to be the size of the zoom image source, if there is not zoom image source then default zoom is 2|
 | zoom-webp            | String |    | Path to the zoom webp image source, zoom option will default as backup if browser doesn't support webp. zoom-webp will be regular-webp image if nothing is selected for zoom-webp, but there's a regular-webp image|
