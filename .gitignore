@@ -1,6 +1,5 @@
 .DS_Store
 node_modules/
-mix-manifest.json
 package-lock.json
 webpack.mix.js
 public/img
