@@ -71,10 +71,6 @@ Vue.component('image-zoom', ImageZoom);
 
 Tested & works very well with [Vue Carousel](https://www.npmjs.com/package/vue-carousel). Untested on others.
 
-## Lazy Loading
-
-The zoom images automatically lazy loads when they activated. The [Lazysizes](https://www.npmjs.com/package/lazysizes) package is used if you want to lazyload the regular image. 'lazyload-placeholder' is optional when lazyloading. Lazysizes package comes with this package.
-
 ```js
 import Vue from 'vue';
 import imageZoom from 'vue-image-zoomer';
@@ -161,8 +157,7 @@ The following props can be added to the html above
 | click-message            | String | <span class="vue-hover-zoom-icon">&#9906;</span> Click to zoom   | To change the message that appears on top of the image before you zoom when click-zoom is set to true, accepts html|
 | hover-message            | String | <span class="vue-hover-zoom-icon">&#9906;</span> Hover to zoom   | To change the message that appears on top of the image before you hover to zoom, accepts html|
 | img-class            | String |    | Class for regular image, e.g. 'img-fluid' in bootstrap|
-| lazyload            | Boolean |  false  | To lazyload the regular image, you need to import lazysizes for this to work|
-| lazyload-placeholder            | String |    | If you want a placeholder image when using lazyload|
+| lazyload            | Boolean |  false  | To lazyload the regular image, uses HTML loading attribute |
 | message-pos            | String |  bottom  | Position of the message that appears on top of the image before you zoom: **top, bottom**|
 | regular            | String |    | **Required** Path to the regular image source|
 | regular-webp            | String |    | Path to the regular webp image source, regular option will default as backup if browser doesn't support webp|
