@@ -10,8 +10,7 @@
 		@mousemove="mousePos" 
 		ref="vue-hover-zs" 
 		@click="isZoom(!zoomed, 'click')">
-			<picture :class="{'vh--none': zoomed}" 
-			v-else>
+			<picture :class="{'vh--none': zoomed}">
 				<template v-for="breakpoint in breakpoints">
 					<source v-if="breakpoint.regularWebp" 
 					:srcset="breakpoint.regularWebp" 
