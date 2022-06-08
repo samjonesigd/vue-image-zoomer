@@ -71,27 +71,6 @@ Vue.component('image-zoom', ImageZoom);
 
 Tested & works very well with [Vue Carousel](https://www.npmjs.com/package/vue-carousel). Untested on others.
 
-```js
-import Vue from 'vue';
-import imageZoom from 'vue-image-zoomer';
-import 'lazysizes'
-
-new Vue({
-    el: '#app',
-    components:{
-    	imageZoom
-    }
-});
-```
-
-```html
-<image-zoom 
-	regular="path-to-regular.jpg" 
-	zoom="path-to-zoom.jpg" 
-	:lazyload="true"
-	lazyload-placeholder="path-to-placeholder.jpg">				
-</image-zoom>
-```
 
 ## Breakpoints
 
