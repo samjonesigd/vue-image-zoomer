@@ -24,7 +24,7 @@ Usage:
 //global
 import { createApp } from 'vue';
 import App from './App.vue'
-import { VueImageZoomer } from '../dist/vue-image-zoomer.es.js'
+import VueImageZoomer from 'vue-image-zoomer'
 import '../dist/style.css';
 
 const app = createApp(App);
@@ -34,7 +34,7 @@ app.use(VueImageZoomer);
 app.mount('#app');
 
 //in component
-import { VueImageZoomer } from '../dist/vue-image-zoomer.es.js'
+import { VueImageZoomer } from 'vue-image-zoomer'
 import '../dist/style.css';
 
 export default {
