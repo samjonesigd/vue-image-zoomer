@@ -51,21 +51,21 @@ Also comes with a UMD version and css file if not using a module compiler in the
 
 ```html
 <!-- Example without zoom image -->
-<v-img-zoomer 
+<vue-image-zoomer 
 	regular="path-to-regular.jpg" />
 
 <!-- jpg example -->
-<v-img-zoomer 
+<vue-image-zoomer 
 	regular="path-to-regular.jpg" 
 	zoom="path-to-zoom.jpg" />
 
 <!-- png example -->
-<v-img-zoomer 
+<vue-image-zoomer 
 	regular="path-to-regular.png" 
 	zoom="path-to-zoom.png" />
 
 <!-- webp example -->
-<v-img-zoomer 
+<vue-image-zoomer 
 	regular="path-to-regular.jpg" 
 	regular-webp="path-to-regular.webp"
 	zoom="path-to-zoom.jpg"
@@ -81,7 +81,7 @@ Order of the objects must start from highest min width, e.g. in the example belo
 Like without breakpoints, if using breakpoints, the zoom parameters aren't required but recommended for a higher quality zoom image, width and regular parameters are **required**. Addition parameters to the array are 'regularWebp' and 'zoomWebp' if using webp images(will be defaulted to standard if browser does not support webp).
 
 ```html
-<v-img-zoomer 
+<vue-image-zoomer 
 	regular="path-to-regular.jpg" 
 	zoom="path-to-zoom.jpg"
 	:breakpoints="[
@@ -98,7 +98,7 @@ Like without breakpoints, if using breakpoints, the zoom parameters aren't requi
 	]" />
 
 <!-- webp example -->
-<v-img-zoomer 
+<vue-image-zoomer 
 	regular="path-to-regular.jpg" 
 	regular-webp="path-to-regular.webp" 
 	zoom="path-to-zoom.jpg"
