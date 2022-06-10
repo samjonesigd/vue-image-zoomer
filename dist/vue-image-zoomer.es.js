@@ -109,7 +109,7 @@ const _sfc_main = {
   },
   computed: {
     propChanges() {
-      return `${this.breakpoints}|${this.regular}|${this.regularWebp}|${this.zoom}|${this.zoomAmount}|${this.zoomWebp}`;
+      return `${this.breakpoints}|${this.regular}|${this.regularWebp}|${this.zoom}|${this.zoomAmount}|${this.zoomWebp}|${this.lazyload}`;
     }
   },
   mounted() {
