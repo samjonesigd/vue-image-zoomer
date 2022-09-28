@@ -1,4 +1,4 @@
-import { resolveDirective, withDirectives, openBlock, createElementBlock, createElementVNode, normalizeClass, Fragment, renderList, createCommentVNode, normalizeStyle, createVNode, Transition, withCtx, withModifiers } from "vue";
+import { resolveDirective, openBlock, createElementBlock, Fragment, renderSlot, createCommentVNode, withDirectives, createElementVNode, normalizeClass, renderList, normalizeStyle, createVNode, Transition, withCtx, withModifiers, vShow } from "vue";
 var vueImageZoomer_vue_vue_type_style_index_0_lang = /* @__PURE__ */ (() => ".VueHoverfade-enter-active,.VueHoverfade-leave-active{transition:opacity .5s}.VueHoverfade-enter,.VueHoverfade-leave-to{opacity:0}.vh--outer[v-cloak]{display:none}.vh--flex{display:flex}.vh--jc{justify-content:center}.vh--ai{align-items:center}.vh--rel{position:relative}.vh--abs{position:absolute}.vh--outer{display:inline-block;line-height:0;font-family:Arial,Helvetica,sans-serif;color:#fff}.vh--holder{overflow:hidden;touch-action:manipulation;cursor:zoom-in;align-items:flex-start}.vh--image{top:0;left:0;pointer-events:none}.vh--message{background-color:#000000a6;padding:8px 15px;border-radius:50px;text-align:center;line-height:initial}.vh--message-top{top:20px}.vh--message-bottom{bottom:20px}.vh--icon{transform:rotate(-45deg);display:block;font-size:20px;margin-right:5px;line-height:20px}.vh--close{line-height:0;background-color:#000000a6;border-radius:50px;font-size:23px;cursor:pointer;height:28px;width:28px}.vh--top-left{top:5px;left:5px}.vh--top-right{top:5px;right:5px}.vh--top-center{top:5px;left:50%;transform:translate(-50%)}.vh--bottom-left{bottom:5px;left:5px}.vh--bottom-right{bottom:5px;right:5px}.vh--bottom-center{bottom:5px;left:50%;transform:translate(-50%)}.vh--loading-o{top:0;left:0;width:100%;height:100%;background-color:#000000a6;pointer-events:none}.vh--loading{top:50%;left:50%;font-size:60px;line-height:60px;animation:vuehoverzoomspin 1s linear infinite;width:36px;height:70px}.vh--none{opacity:0}.vh--no-click img{pointer-events:none}@keyframes vuehoverzoomspin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}\n")();
 var _export_sfc = (sfc, props) => {
   const target = sfc.__vccOpts || sfc;
@@ -9,6 +9,7 @@ var _export_sfc = (sfc, props) => {
 };
 const _sfc_main = {
   name: "VueImageZoomer",
+  emits: ["onZoom", "offZoom", "regularLoaded", "zoomLoaded", "zoomLoading"],
   directives: {
     clickOutside: {
       mounted(el, binding) {
@@ -46,7 +47,8 @@ const _sfc_main = {
       loading: false,
       webp_supported: false,
       cx: 0,
-      cy: 0
+      cy: 0,
+      showSlot: true
     };
   },
   props: {
@@ -236,6 +238,7 @@ const _sfc_main = {
     zoomLoad() {
       if (!this.clickZoom || this.touch) {
         this.loading = true;
+        this.$emit("zoomLoading");
       }
       let zoomToLoad = this.options.zoom;
       if (this.breakpoints) {
@@ -271,6 +274,7 @@ const _sfc_main = {
         }
         this.loaded = true;
         this.loading = false;
+        this.$emit("zoomLoaded");
         if (!this.clickZoom || this.touch) {
           this.zoomed = true;
           this.mobilePos();
@@ -282,6 +286,9 @@ const _sfc_main = {
         this.zoomed = false;
         if (type == true) {
           this.loadZoom();
+          this.$emit("onZoom");
+        } else {
+          this.$emit("offZoom");
         }
       }
     },
@@ -346,124 +353,129 @@ const _hoisted_19 = [
 ];
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   const _directive_click_outside = resolveDirective("click-outside");
-  return withDirectives((openBlock(), createElementBlock("div", _hoisted_1, [
-    createElementVNode("div", {
-      class: normalizeClass(["vh--holder vh--rel vh--flex vh--jc", { "vh--no-click": !$props.rightClick }]),
-      onMouseenter: _cache[0] || (_cache[0] = ($event) => $options.isZoom(true, "hover")),
-      onMouseleave: _cache[1] || (_cache[1] = ($event) => $options.isZoom(false, "hover")),
-      onMousemove: _cache[2] || (_cache[2] = (...args) => $options.mousePos && $options.mousePos(...args)),
-      ref: "vue-hover-zs",
-      onClick: _cache[3] || (_cache[3] = ($event) => $options.isZoom(!$data.zoomed, "click"))
-    }, [
-      createElementVNode("picture", {
-        class: normalizeClass({ "vh--none": $data.zoomed })
+  return openBlock(), createElementBlock(Fragment, null, [
+    $data.showSlot && !$props.lazyload ? renderSlot(_ctx.$slots, "default", { key: 0 }) : createCommentVNode("", true),
+    withDirectives((openBlock(), createElementBlock("div", _hoisted_1, [
+      createElementVNode("div", {
+        class: normalizeClass(["vh--holder vh--rel vh--flex vh--jc", { "vh--no-click": !$props.rightClick }]),
+        onMouseenter: _cache[1] || (_cache[1] = ($event) => $options.isZoom(true, "hover")),
+        onMouseleave: _cache[2] || (_cache[2] = ($event) => $options.isZoom(false, "hover")),
+        onMousemove: _cache[3] || (_cache[3] = (...args) => $options.mousePos && $options.mousePos(...args)),
+        ref: "vue-hover-zs",
+        onClick: _cache[4] || (_cache[4] = ($event) => $options.isZoom(!$data.zoomed, "click"))
       }, [
-        (openBlock(true), createElementBlock(Fragment, null, renderList($props.breakpoints, (breakpoint) => {
-          return openBlock(), createElementBlock(Fragment, {
-            key: breakpoint.width
-          }, [
-            breakpoint.regularWebp ? (openBlock(), createElementBlock("source", {
+        createElementVNode("picture", {
+          class: normalizeClass({ "vh--none": $data.zoomed })
+        }, [
+          (openBlock(true), createElementBlock(Fragment, null, renderList($props.breakpoints, (breakpoint) => {
+            return openBlock(), createElementBlock(Fragment, {
+              key: breakpoint.width
+            }, [
+              breakpoint.regularWebp ? (openBlock(), createElementBlock("source", {
+                key: 0,
+                srcset: breakpoint.regularWebp,
+                type: "image/webp",
+                media: "(min-width:" + breakpoint.width + "px)"
+              }, null, 8, _hoisted_2)) : createCommentVNode("", true),
+              breakpoint.regular ? (openBlock(), createElementBlock("source", {
+                key: 1,
+                srcset: breakpoint.regular,
+                media: "(min-width:" + breakpoint.width + "px)"
+              }, null, 8, _hoisted_3)) : createCommentVNode("", true)
+            ], 64);
+          }), 128)),
+          $props.regularWebp ? (openBlock(), createElementBlock("source", {
+            key: 0,
+            srcset: $props.regularWebp,
+            type: "image/webp"
+          }, null, 8, _hoisted_4)) : createCommentVNode("", true),
+          createElementVNode("img", {
+            loading: $props.lazyload ? "lazy" : "eager",
+            src: $props.regular,
+            class: normalizeClass($props.imgClass),
+            alt: $props.alt,
+            onLoad: _cache[0] || (_cache[0] = ($event) => (_ctx.$emit("regularLoaded"), $data.showSlot = false))
+          }, null, 42, _hoisted_5)
+        ], 2),
+        $data.zoomed ? (openBlock(), createElementBlock("picture", _hoisted_6, [
+          (openBlock(true), createElementBlock(Fragment, null, renderList($props.breakpoints, (breakpoint) => {
+            return openBlock(), createElementBlock(Fragment, {
+              key: breakpoint.width
+            }, [
+              breakpoint.zoomWebp ? (openBlock(), createElementBlock("source", {
+                key: 0,
+                srcset: breakpoint.zoomWebp,
+                type: "image/webp",
+                media: "(min-width:" + breakpoint.width + "px)"
+              }, null, 8, _hoisted_7)) : breakpoint.regularWebp ? (openBlock(), createElementBlock("source", {
+                key: 1,
+                srcset: breakpoint.regularWebp,
+                type: "image/webp",
+                media: "(min-width:" + breakpoint.width + "px)"
+              }, null, 8, _hoisted_8)) : createCommentVNode("", true),
+              breakpoint.zoom ? (openBlock(), createElementBlock("source", {
+                key: 2,
+                srcset: breakpoint.zoom,
+                media: "(min-width:" + breakpoint.width + "px)"
+              }, null, 8, _hoisted_9)) : breakpoint.regular ? (openBlock(), createElementBlock("source", {
+                key: 3,
+                srcset: breakpoint.regular,
+                media: "(min-width:" + breakpoint.width + "px)"
+              }, null, 8, _hoisted_10)) : createCommentVNode("", true)
+            ], 64);
+          }), 128)),
+          $data.options.zoomWebp ? (openBlock(), createElementBlock("source", {
+            key: 0,
+            src: $data.options.zoomWebp,
+            type: "image/webp"
+          }, null, 8, _hoisted_11)) : createCommentVNode("", true),
+          !$data.touch ? (openBlock(), createElementBlock("img", {
+            key: 1,
+            src: $data.options.zoom,
+            class: "vh--image vh--abs",
+            style: normalizeStyle({ width: $data.zoomWidth + "px", transform: "translate(-" + $data.x + "px,-" + $data.y + "px)" })
+          }, null, 12, _hoisted_12)) : (openBlock(), createElementBlock("img", {
+            key: 2,
+            src: $data.options.zoom,
+            class: "vh--image vh--abs",
+            style: normalizeStyle("width:" + $data.zoomWidth + "px;transform:" + $data.touchPosition)
+          }, null, 12, _hoisted_13))
+        ])) : createCommentVNode("", true),
+        createVNode(Transition, { name: "VueHoverfade" }, {
+          default: withCtx(() => [
+            !$data.zoomed && !$data.loading && !$props.clickZoom && !$data.touch && $props.showMessage ? (openBlock(), createElementBlock("div", {
               key: 0,
-              srcset: breakpoint.regularWebp,
-              type: "image/webp",
-              media: "(min-width:" + breakpoint.width + "px)"
-            }, null, 8, _hoisted_2)) : createCommentVNode("", true),
-            breakpoint.regular ? (openBlock(), createElementBlock("source", {
+              class: normalizeClass(["vh--message vh--abs vh--flex vh--jc vh--ai", "vh--message-" + $props.messagePos]),
+              innerHTML: $props.hoverMessage
+            }, null, 10, _hoisted_14)) : !$data.zoomed && !$data.loading && !$data.touch && $props.showMessage ? (openBlock(), createElementBlock("div", {
               key: 1,
-              srcset: breakpoint.regular,
-              media: "(min-width:" + breakpoint.width + "px)"
-            }, null, 8, _hoisted_3)) : createCommentVNode("", true)
-          ], 64);
-        }), 128)),
-        $props.regularWebp ? (openBlock(), createElementBlock("source", {
-          key: 0,
-          srcset: $props.regularWebp,
-          type: "image/webp"
-        }, null, 8, _hoisted_4)) : createCommentVNode("", true),
-        createElementVNode("img", {
-          loading: $props.lazyload ? "lazy" : "eager",
-          src: $props.regular,
-          class: normalizeClass($props.imgClass),
-          alt: $props.alt
-        }, null, 10, _hoisted_5)
-      ], 2),
-      $data.zoomed ? (openBlock(), createElementBlock("picture", _hoisted_6, [
-        (openBlock(true), createElementBlock(Fragment, null, renderList($props.breakpoints, (breakpoint) => {
-          return openBlock(), createElementBlock(Fragment, {
-            key: breakpoint.width
-          }, [
-            breakpoint.zoomWebp ? (openBlock(), createElementBlock("source", {
-              key: 0,
-              srcset: breakpoint.zoomWebp,
-              type: "image/webp",
-              media: "(min-width:" + breakpoint.width + "px)"
-            }, null, 8, _hoisted_7)) : breakpoint.regularWebp ? (openBlock(), createElementBlock("source", {
-              key: 1,
-              srcset: breakpoint.regularWebp,
-              type: "image/webp",
-              media: "(min-width:" + breakpoint.width + "px)"
-            }, null, 8, _hoisted_8)) : createCommentVNode("", true),
-            breakpoint.zoom ? (openBlock(), createElementBlock("source", {
+              class: normalizeClass(["vh--message vh--abs vh--flex vh--jc vh--ai", "vh--message-" + $props.messagePos]),
+              innerHTML: $props.clickMessage
+            }, null, 10, _hoisted_15)) : !$data.zoomed && !$data.loading && $data.touch && $props.showMessageTouch ? (openBlock(), createElementBlock("div", {
               key: 2,
-              srcset: breakpoint.zoom,
-              media: "(min-width:" + breakpoint.width + "px)"
-            }, null, 8, _hoisted_9)) : breakpoint.regular ? (openBlock(), createElementBlock("source", {
-              key: 3,
-              srcset: breakpoint.regular,
-              media: "(min-width:" + breakpoint.width + "px)"
-            }, null, 8, _hoisted_10)) : createCommentVNode("", true)
-          ], 64);
-        }), 128)),
-        $data.options.zoomWebp ? (openBlock(), createElementBlock("source", {
-          key: 0,
-          src: $data.options.zoomWebp,
-          type: "image/webp"
-        }, null, 8, _hoisted_11)) : createCommentVNode("", true),
-        !$data.touch ? (openBlock(), createElementBlock("img", {
-          key: 1,
-          src: $data.options.zoom,
-          class: "vh--image vh--abs",
-          style: normalizeStyle({ width: $data.zoomWidth + "px", transform: "translate(-" + $data.x + "px,-" + $data.y + "px)" })
-        }, null, 12, _hoisted_12)) : (openBlock(), createElementBlock("img", {
-          key: 2,
-          src: $data.options.zoom,
-          class: "vh--image vh--abs",
-          style: normalizeStyle("width:" + $data.zoomWidth + "px;transform:" + $data.touchPosition)
-        }, null, 12, _hoisted_13))
-      ])) : createCommentVNode("", true),
+              class: normalizeClass(["vh--message vh--abs vh--flex vh--jc vh--ai", "vh--message-" + $props.messagePos]),
+              innerHTML: $props.touchMessage
+            }, null, 10, _hoisted_16)) : createCommentVNode("", true)
+          ]),
+          _: 1
+        })
+      ], 34),
       createVNode(Transition, { name: "VueHoverfade" }, {
         default: withCtx(() => [
-          !$data.zoomed && !$data.loading && !$props.clickZoom && !$data.touch && $props.showMessage ? (openBlock(), createElementBlock("div", {
+          $data.touch && $data.zoomed && $data.loaded ? (openBlock(), createElementBlock("div", {
             key: 0,
-            class: normalizeClass(["vh--message vh--abs vh--flex vh--jc vh--ai", "vh--message-" + $props.messagePos]),
-            innerHTML: $props.hoverMessage
-          }, null, 10, _hoisted_14)) : !$data.zoomed && !$data.loading && !$data.touch && $props.showMessage ? (openBlock(), createElementBlock("div", {
-            key: 1,
-            class: normalizeClass(["vh--message vh--abs vh--flex vh--jc vh--ai", "vh--message-" + $props.messagePos]),
-            innerHTML: $props.clickMessage
-          }, null, 10, _hoisted_15)) : !$data.zoomed && !$data.loading && $data.touch && $props.showMessageTouch ? (openBlock(), createElementBlock("div", {
-            key: 2,
-            class: normalizeClass(["vh--message vh--abs vh--flex vh--jc vh--ai", "vh--message-" + $props.messagePos]),
-            innerHTML: $props.touchMessage
-          }, null, 10, _hoisted_16)) : createCommentVNode("", true)
+            class: normalizeClass(["vh--close vh--abs vh--flex vh--jc vh--ai", "vh--" + $props.closePos]),
+            onClick: _cache[5] || (_cache[5] = withModifiers(($event) => $data.zoomed = false, ["stop"])),
+            innerHTML: "\xD7"
+          }, null, 2)) : $data.loading ? (openBlock(), createElementBlock("div", _hoisted_17, _hoisted_19)) : createCommentVNode("", true)
         ]),
         _: 1
       })
-    ], 34),
-    createVNode(Transition, { name: "VueHoverfade" }, {
-      default: withCtx(() => [
-        $data.touch && $data.zoomed && $data.loaded ? (openBlock(), createElementBlock("div", {
-          key: 0,
-          class: normalizeClass(["vh--close vh--abs vh--flex vh--jc vh--ai", "vh--" + $props.closePos]),
-          onClick: _cache[4] || (_cache[4] = withModifiers(($event) => $data.zoomed = false, ["stop"])),
-          innerHTML: "\xD7"
-        }, null, 2)) : $data.loading ? (openBlock(), createElementBlock("div", _hoisted_17, _hoisted_19)) : createCommentVNode("", true)
-      ]),
-      _: 1
-    })
-  ])), [
-    [_directive_click_outside, $options.isZoom]
-  ]);
+    ])), [
+      [_directive_click_outside, $options.isZoom],
+      [vShow, !$data.showSlot || $props.lazyload]
+    ])
+  ], 64);
 }
 var VueImageZoomer = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
 var index = {

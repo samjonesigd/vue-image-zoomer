@@ -1,9 +1,11 @@
 <style>.VueHoverfade-enter-active,.VueHoverfade-leave-active{transition:opacity .5s}.VueHoverfade-enter,.VueHoverfade-leave-to{opacity:0}.vh--outer[v-cloak]{display:none}.vh--flex{display:flex}.vh--jc{justify-content:center}.vh--ai{align-items:center}.vh--rel{position:relative}.vh--abs{position:absolute}.vh--outer{display:inline-block;line-height:0;font-family:Arial,Helvetica,sans-serif;color:#fff}.vh--holder{overflow:hidden;touch-action:manipulation;cursor:zoom-in;align-items:flex-start}.vh--image{top:0;left:0;pointer-events:none}.vh--message{background-color:rgba(0,0,0,.65);padding:8px 15px;border-radius:50px;text-align:center;line-height:initial}.vh--message-top{top:20px}.vh--message-bottom{bottom:20px}.vh--icon{transform:rotate(-45deg);display:block;font-size:20px;margin-right:5px;line-height:20px}.vh--close{line-height:0;background-color:rgba(0,0,0,.65);border-radius:50px;font-size:23px;cursor:pointer;height:28px;width:28px}.vh--top-left{top:5px;left:5px}.vh--top-right{top:5px;right:5px}.vh--top-center{top:5px;left:50%;transform:translateX(-50%)}.vh--bottom-left{bottom:5px;left:5px}.vh--bottom-right{bottom:5px;right:5px}.vh--bottom-center{bottom:5px;left:50%;transform:translateX(-50%)}.vh--loading-o{top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,.65);pointer-events:none}.vh--loading{top:50%;left:50%;font-size:60px;line-height:60px;animation:vuehoverzoomspin 1s linear infinite;width:36px;height:70px}.vh--none{opacity:0}.vh--no-click img{pointer-events: none}@keyframes vuehoverzoomspin{from{transform:rotate(0)}to{transform:rotate(360deg)}}</style>
 
 <template>
+    <slot v-if="showSlot && !lazyload"></slot>
     <div class="vh--outer vh--rel" 
     v-cloak 
-    v-click-outside="isZoom">
+    v-click-outside="isZoom"
+    v-show="!showSlot || lazyload">
         <div class="vh--holder vh--rel vh--flex vh--jc" 
         :class="{'vh--no-click': !rightClick}"
         @mouseenter="isZoom(true, 'hover')" 
@@ -22,7 +24,7 @@
                     :media="'(min-width:' + breakpoint.width + 'px)'"/>
                 </template>
                 <source v-if="regularWebp" :srcset="regularWebp" type="image/webp">    
-                <img :loading="lazyload ? 'lazy' : 'eager'" :src="regular" :class="imgClass" :alt="alt" />
+                <img :loading="lazyload ? 'lazy' : 'eager'" :src="regular" :class="imgClass" :alt="alt" @load="$emit('regularLoaded'), showSlot = false"/>
             </picture>
             <picture v-if="zoomed">       
                 <template v-for="breakpoint in breakpoints" :key="breakpoint.width">
@@ -94,6 +96,8 @@ export default {
 
     name: 'VueImageZoomer', 
 
+    emits: ['onZoom', 'offZoom', 'regularLoaded', 'zoomLoaded', 'zoomLoading'],
+
     directives: {
         clickOutside: {
             mounted (el, binding) {
@@ -135,6 +139,7 @@ export default {
             webp_supported: false,
             cx: 0,
             cy: 0,
+            showSlot: true
         };
     },
 
@@ -195,16 +200,16 @@ export default {
     watch: { 
         propChanges() {
             this.get_options();
-        }
+        },
     },
 
     computed: {
         propChanges() {
             return `${this.breakpoints}|${this.regular}|${this.regularWebp}|${this.zoom}|${this.zoomAmount}|${this.zoomWebp}|${this.lazyload}`;
-        }
+        },
     },
 
-    mounted(){   
+    mounted(){
         this.check_webp_feature('lossy', (feature, isSupported) => {
             if (isSupported) {
                 this.webp_supported = true;
@@ -349,6 +354,7 @@ export default {
         zoomLoad(){
             if(!this.clickZoom || this.touch){
                 this.loading = true;
+                this.$emit('zoomLoading');
             }
             //load zoom image
             let zoomToLoad = this.options.zoom;
@@ -386,6 +392,7 @@ export default {
                 }
                 this.loaded = true;
                 this.loading = false; 
+                this.$emit('zoomLoaded');
                 if(!this.clickZoom || this.touch){
                     this.zoomed = true; 
                     this.mobilePos();
@@ -400,6 +407,9 @@ export default {
                 //if true passed load the zoom image
                 if(type == true){
                     this.loadZoom();
+                    this.$emit('onZoom');
+                } else {
+                    this.$emit('offZoom');
                 }
             }
         },

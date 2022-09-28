@@ -12,12 +12,16 @@
       </h2>
 <code>
 <pre class="bg-light border rounded p-2 d-inline-block">
-&lt;image-zoom 
+&lt;vue-image-zoom 
     regular="img/sky.jpg" 
     zoom="img/sky-zoom.jpg" 
     :zoom-amount="3" 
     img-class="img-fluid"
-    alt="Sky" /&gt;
+    alt="Sky"
+    @on-zoom="zoom = true"
+    @off-zoom="zoom = false" /&gt;
+
+    Zoomed: &#123;&#123; zoom &#125;&#125;
 </pre>
 </code>
       <vue-image-zoomer 
@@ -27,13 +31,44 @@
         img-class="img-fluid"
         :img-width="20"
         :img-height="20"
-        alt="Sky" />
+        alt="Sky" 
+        @on-zoom="zoom = true"
+        @off-zoom="zoom = false" />
+
+        Zoomed: {{ zoom }}
+
+      <h2 class="w-100 text-center mt-5 pt-3 border-top">
+        Default Hover Zoom with placeholder
+      </h2>
+      <p>This helps fix CLS issues, you could use a low res version of the regular image.</p>
+<code>
+<pre class="bg-light border rounded p-2 d-inline-block">
+&lt;vue-image-zoom 
+    regular="img/sky.jpg" 
+    zoom="img/sky-zoom.jpg" 
+    :zoom-amount="3" 
+    img-class="img-fluid"
+    alt="Sky"&gt;
+    &lt;img src="/img/sky.jpg" img-class="img-fluid"/&gt;
+&lt;/vue-image-zoom&gt;
+</pre>
+</code>
+      <vue-image-zoomer 
+        regular="/img/sky.jpg" 
+        zoom="/img/sky-zoom.jpg" 
+        :zoom-amount="3" 
+        img-class="img-fluid"
+        :img-width="20"
+        :img-height="20"
+        alt="Sky">
+          <img src="/img/sky.jpg" img-class="img-fluid"/>
+        </vue-image-zoomer>
 
       <h2 class="w-100 text-center mt-5 pt-3 border-top">Default Hover Zoom with just a regular image</h2>
       <p>Here you can see it is not as sharp as using a zoom image</p>
 <code>
 <pre class="bg-light border rounded p-2 d-inline-block">
-&lt;image-zoom 
+&lt;vue-image-zoom 
     regular="img/sky.jpg" 
     img-class="img-fluid"
     alt="Sky"
@@ -51,7 +86,7 @@
         <h2 class="w-100 text-center mt-5 pt-3 border-top">Click To Zoom</h2>
 <code>
 <pre class="bg-light border rounded p-2 d-inline-block">
-&lt;image-zoom 
+&lt;vue-image-zoom 
     regular="img/grass.jpg" 
     zoom="img/grass-zoom.jpg" 
     :zoom-amount="3"
@@ -71,7 +106,7 @@
         <h2 class="w-100 text-center mt-5 pt-3 border-top">Custom Messages and default zoom amount</h2>
 <code>
 <pre class="bg-light border rounded p-2 d-inline-block">
-&lt;image-zoom 
+&lt;vue-image-zoom 
     regular="img/balls.jpg" 
     zoom="img/balls-zoom.jpg"
     hover-message="Custom hover message"
@@ -93,7 +128,7 @@
         <p>Width order must start from highest min width.</p>
 <code>
 <pre class="bg-light border rounded p-2 d-inline-block">
-&lt;image-zoom 
+&lt;vue-image-zoom 
   regular="img/sky.jpg" 
   zoom="img/sky-zoom.jpg" 
   :zoom-amount="3" 
@@ -130,19 +165,29 @@
               regular: 'img/sky-inverted.jpg',
               zoom: 'img/sky-zoom-inverted.jpg'
             }           
-          ]" />
+          ]"/>
     </div>      
   </div>
 </template>
 
 <script>
-import { VueImageZoomer } from '../dist/vue-image-zoomer.es.js'
+import VueImageZoomer from './components/VueImageZoomer.vue'
 import '../dist/style.css';
 
 export default {
   name: 'App',
   components: {
     VueImageZoomer
+  },
+  data() {
+    return { 
+      zoom: false,
+    }
+  },
+  methods:{
+    doAlert(){
+      console.log('hello')
+    }
   }
 }
 </script>
