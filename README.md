@@ -72,6 +72,18 @@ Also comes with a UMD version and css file if not using a module compiler in the
 	zoom-webp="path-to-zoom.webp" />
 ```
 
+## Placeholder
+
+Placeholder slot, helps with CLS improvements & page jumping.
+
+```html
+<vue-image-zoomer 
+	regular="path-to-regular.jpg" 
+	zoom="path-to-zoom.jpg">
+	<img src="path-to-low-res-placeholder.jpg" />
+</vue-image-zoomer>
+```
+
 ## Breakpoints
 
 This option is an array of objects that allows you to have different images on different screen sizes. For example to load a higher res image on desktop. 
@@ -146,6 +158,18 @@ The following props can be added to the html above
 | zoom            | String |  Regular image  | **Recommended** Path to the zoom image source. If zoom not selected then will use the regular image times by 2.|
 | zoom-amount            | Number |    | Amount you want the zoom image to zoom by e.g. '2' would be 2 times as large as the regular image's dom size. Zoom is defaulted to be the size of the zoom image source, if there is not zoom image source then default zoom is 2|
 | zoom-webp            | String |    | Path to the zoom webp image source, zoom option will default as backup if browser doesn't support webp. zoom-webp will be regular-webp image if nothing is selected for zoom-webp, but there's a regular-webp image|
+
+## Events
+
+The events that the component emits.
+
+| Event                     | Description|
+|:----------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| regular-load            | Fires when the regular image has loaded on page|
+| off-zoom            | Fires when you are not zooming |
+| on-zoom            | Fires when you are zooming |
+| zoom-loaded            | Fires when the zoom image has loaded|
+| zoom-loading            | Fires when the zoom image is loading|
 
 ## License
 
