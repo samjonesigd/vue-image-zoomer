@@ -52,6 +52,13 @@ Vue.component('image-zoom', ImageZoom);
 	zoom="path-to-zoom.jpg">				
 </image-zoom>
 
+<!-- placeholder slot, helps with CLS improvements -->
+<image-zoom 
+	regular="path-to-regular.jpg" 
+	zoom="path-to-zoom.jpg">
+	<img src="low-res-placeholder.jpg" />
+</image-zoom>
+
 <!-- png example -->
 <image-zoom 
 	regular="path-to-regular.png" 
@@ -64,6 +71,18 @@ Vue.component('image-zoom', ImageZoom);
 	regular-webp="path-to-regular.webp"
 	zoom="path-to-zoom.jpg"
 	zoom-webp="path-to-zoom.webp">				
+</image-zoom>
+```
+
+## Placeholder
+
+Placeholder slot, helps with CLS improvements & page jumping.
+
+```html
+<image-zoom 
+	regular="path-to-regular.jpg" 
+	zoom="path-to-zoom.jpg">
+	<img src="path-to-low-res-placeholder.jpg" />
 </image-zoom>
 ```
 
@@ -123,7 +142,7 @@ Like without breakpoints, if using breakpoints, the zoom parameters aren't requi
 </image-zoom>
 ```
 
-## All Options
+## Props
 
 The following props can be added to the html above
 
@@ -147,6 +166,18 @@ The following props can be added to the html above
 | zoom            | String |  Regular image  | **Recommended** Path to the zoom image source. If zoom not selected then will use the regular image times by 2.|
 | zoom-amount            | Number |    | Amount you want the zoom image to zoom by e.g. '2' would be 2 times as large as the regular image's dom size. Zoom is defaulted to be the size of the zoom image source, if there is not zoom image source then default zoom is 2|
 | zoom-webp            | String |    | Path to the zoom webp image source, zoom option will default as backup if browser doesn't support webp. zoom-webp will be regular-webp image if nothing is selected for zoom-webp, but there's a regular-webp image|
+
+## Events
+
+The events that the component emits.
+
+| Event                     | Description|
+|:----------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| regular-loaded            | Fires when the regular image has loaded on page|
+| off-zoom            | Fires when you are not zooming |
+| on-zoom            | Fires when you are zooming |
+| zoom-loaded            | Fires when the zoom image has loaded|
+| zoom-loading            | Fires when the zoom image is loading|
 
 ## License
 

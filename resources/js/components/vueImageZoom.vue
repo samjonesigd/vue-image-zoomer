@@ -2,14 +2,15 @@
 
 <template>
 	<div class="vh--outer vh--rel" 
-	v-cloak 
 	v-click-outside="isZoom">
+		<slot v-if="showSlot && !lazyload"></slot>
 		<div class="vh--holder vh--rel vh--flex vh--jc" 
 		@mouseenter="isZoom(true, 'hover')" 
 		@mouseleave="isZoom(false, 'hover')" 
 		@mousemove="mousePos" 
 		ref="vue-hover-zs" 
-		@click="isZoom(!zoomed, 'click')">
+		@click="isZoom(!zoomed, 'click')"
+		v-show="!showSlot || lazyload">
 			<picture :class="{'vh--none': zoomed}">
 				<template v-for="breakpoint in breakpoints">
 					<source v-if="breakpoint.regularWebp" 
@@ -21,7 +22,7 @@
 					:media="'(min-width:' + breakpoint.width + 'px)'"/>
 				</template>
 				<source v-if="regularWebp" :srcset="regularWebp" type="image/webp">    
-				<img :src="regular" :loading="lazyload ? 'lazy' : 'eager'" :class="imgClass" :alt="alt" />
+				<img :src="regular" :loading="lazyload ? 'lazy' : 'eager'" :class="imgClass" :alt="alt" @load="$emit('regular-loaded'), showSlot = false"/>
 			</picture>
 			<picture v-if="zoomed">				
 				<template v-for="breakpoint in breakpoints">
@@ -354,6 +355,7 @@ export default {
 		zoomLoad(){
 			if(!this.clickZoom || this.touch){
 				this.loading = true;
+				this.$emit('zoom-loading');
 			}
 			//load zoom image
 			let zoomToLoad = this.options.zoom;
@@ -391,6 +393,7 @@ export default {
 				}
 				this.loaded = true;
 				this.loading = false; 
+				this.$emit('zoom-loaded');
 				if(!this.clickZoom || this.touch){
 					this.zoomed = true;	
 					this.mobilePos();
@@ -404,8 +407,11 @@ export default {
 
 				//if true passed load the zoom image
 				if(type == true){
-					this.loadZoom();
-				}
+                    this.loadZoom();
+                    this.$emit('on-zoom');
+                } else {
+                    this.$emit('off-zoom');
+                }
 			}
 		},
 		mobilePos(){

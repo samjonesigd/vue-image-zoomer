@@ -6,4 +6,9 @@ new Vue({
     components:{
     	imageZoom
     },
+    data() {
+    	return { 
+    		zoom: false
+    	}
+    }
 })
