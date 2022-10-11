@@ -165,7 +165,7 @@ The events that the component emits.
 
 | Event                     | Description|
 |:----------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| regular-load            | Fires when the regular image has loaded on page|
+| regular-loaded            | Fires when the regular image has loaded on page|
 | off-zoom            | Fires when you are not zooming |
 | on-zoom            | Fires when you are zooming |
 | zoom-loaded            | Fires when the zoom image has loaded|
