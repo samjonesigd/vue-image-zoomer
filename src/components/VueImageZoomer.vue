@@ -347,59 +347,8 @@ export default {
         //check if touch screen
         if ('ontouchstart' in window || navigator.msMaxTouchPoints) {
             this.touch = true;
-        }
-
-    },
-
-    updated() {
-        let sx, sy;
-        //touch start
-        this.$refs['vue-hover-zs'].addEventListener('touchstart', (e) => {
-            if (this.zoomed) {
-                if (e.cancelable) {
-                    e.preventDefault();
-                }
-                let touchmovement = e.changedTouches[0]
-                sx = touchmovement.pageX - this.cx;
-                sy = touchmovement.pageY - this.cy;
-
-            }
-        });
-
-        //drag zoom if touch device
-        this.$refs['vue-hover-zs'].addEventListener('touchmove', (e) => {
-            if (this.zoomed) {
-                let touchmovement = e.changedTouches[0]
-
-                this.x = touchmovement.pageX - sx;
-                this.y = touchmovement.pageY - sy;
-
-                if (touchmovement.pageX - sx <= (this.origX - this.zoomWidth)) {
-                    this.x = this.origX - this.zoomWidth;
-                }
-                if (touchmovement.pageX - sx >= 0) {
-                    this.x = -1;
-                }
-                if (touchmovement.pageY - sy <= (this.origY - (this.options.zoomAmount * this.origY))) {
-                    this.y = this.origY - (this.options.zoomAmount * this.origY);
-                }
-                if (touchmovement.pageY - sy >= 0) {
-                    this.y = -1;
-                }
-
-                this.touchPosition = 'translate3d(' +
-                    (this.x) + 'px,' + (this.y) + 'px,0)';
-            }
-        });
-
-        //end touch
-        this.$refs['vue-hover-zs'].addEventListener('touchend', (e) => {
-            if (this.zoomed) {
-                let touchmovement = e.changedTouches[0]
-                this.cx = touchmovement.pageX - sx;
-                this.cy = touchmovement.pageY - sy;
-            }
-        });
+        }     
+        this.touchLogic() 
     },
 
     created() {
@@ -409,7 +358,58 @@ export default {
         window.removeEventListener("resize", this.resize());
     },
 
-    methods: {
+    methods: { 
+        async touchLogic(){ 
+            await nextTick();
+            let sx,sy;
+            //touch start
+            this.$refs['vue-hover-zs'].addEventListener('touchstart',(e) => {
+                if(this.zoomed){
+                    if (e.cancelable) {
+                        e.preventDefault();
+                    }
+                    let touchmovement = e.changedTouches[0]
+                    sx=touchmovement.pageX-this.cx;
+                    sy=touchmovement.pageY-this.cy; 
+
+                }
+            });
+
+            //drag zoom if touch device
+            this.$refs['vue-hover-zs'].addEventListener('touchmove',(e) => {
+                if(this.zoomed){
+                    let touchmovement = e.changedTouches[0]
+
+                    this.x = touchmovement.pageX-sx;
+                    this.y = touchmovement.pageY-sy;
+
+                    if(touchmovement.pageX-sx <= (this.origX - this.zoomWidth)){        
+                      this.x = this.origX - this.zoomWidth;
+                    }
+                    if(touchmovement.pageX-sx >= 0){
+                      this.x = -1;
+                    }
+                    if(touchmovement.pageY-sy <= (this.origY - (this.options.zoomAmount * this.origY))){
+                      this.y = this.origY - (this.options.zoomAmount * this.origY); 
+                    }
+                    if(touchmovement.pageY-sy >= 0){
+                      this.y = -1;
+                    }
+
+                    this.touchPosition='translate3d('+
+                    (this.x)+'px,'+(this.y)+'px,0)';
+                } 
+            }); 
+
+            //end touch
+            this.$refs['vue-hover-zs'].addEventListener('touchend',(e) => {
+                if(this.zoomed){
+                    let touchmovement = e.changedTouches[0]
+                    this.cx=touchmovement.pageX-sx;
+                    this.cy=touchmovement.pageY-sy;
+                }
+            });
+        },
         debounce(callback, wait) {
             let timeout;
             return (...args) => {
