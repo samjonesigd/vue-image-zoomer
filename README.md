@@ -1,6 +1,6 @@
 # Vue Image Zoomer
 
-Lightweight responsive image zoom component for Vue.js 3, that also works on touch devices. Perfect for zooming on product images on an ecommerce website. For Vue 2 please check out the legacy version <https://www.npmjs.com/package/vue-image-zoomer/v/legacy>.
+Lightweight responsive image zoom component for Vue.js 3 & 2, that also works on touch devices. Perfect for zooming on product images on an ecommerce website. For Vue 2 please check out the legacy version <https://www.npmjs.com/package/vue-image-zoomer/v/legacy>.
 
 Works on hover(default) or click on mouse devices, tap to zoom on touch screens.
 

@@ -92,6 +92,8 @@
 
 <script>
 
+import { nextTick } from 'vue';
+
 export default {
 
     name: 'VueImageZoomer', 
