@@ -17,6 +17,10 @@ Demo: <https://samueljon.es/vue-image-zoomer>
 ```sh
 npm i vue-image-zoomer
 ```
+For Vue 2 instructions [here](https://www.npmjs.com/package/vue-image-zoomer/v/legacy) 
+```sh
+npm i vue-image-zoomer@legacy
+```
 
 Usage:
 
