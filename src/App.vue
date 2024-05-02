@@ -18,6 +18,7 @@
     :zoom-amount="3" 
     img-class="img-fluid"
     alt="Sky"
+    :tap-to-close="true"
     @on-zoom="zoom = true"
     @off-zoom="zoom = false" /&gt;
 
@@ -29,9 +30,8 @@
         zoom="/img/sky-zoom.jpg" 
         :zoom-amount="3" 
         img-class="img-fluid"
-        :img-width="20"
-        :img-height="20"
         alt="Sky" 
+        :tap-to-close="true"
         @on-zoom="zoom = true"
         @off-zoom="zoom = false" />
 
@@ -58,8 +58,6 @@
         zoom="/img/sky-zoom.jpg" 
         :zoom-amount="3" 
         img-class="img-fluid"
-        :img-width="20"
-        :img-height="20"
         alt="Sky">
           <img src="/img/sky.jpg" img-class="img-fluid"/>
         </vue-image-zoomer>

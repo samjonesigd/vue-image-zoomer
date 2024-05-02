@@ -1,5 +1,5 @@
 import { nextTick, resolveDirective, openBlock, createElementBlock, Fragment, renderSlot, createCommentVNode, withDirectives, createElementVNode, normalizeClass, renderList, normalizeStyle, createVNode, Transition, withCtx, withModifiers, vShow } from "vue";
-var vueImageZoomer_vue_vue_type_style_index_0_lang = /* @__PURE__ */ (() => ".VueHoverfade-enter-active,.VueHoverfade-leave-active{transition:opacity .5s}.VueHoverfade-enter,.VueHoverfade-leave-to{opacity:0}.vh--outer[v-cloak]{display:none}.vh--flex{display:flex}.vh--jc{justify-content:center}.vh--ai{align-items:center}.vh--rel{position:relative}.vh--abs{position:absolute}.vh--outer{display:inline-block;line-height:0;font-family:Arial,Helvetica,sans-serif;color:#fff}.vh--holder{overflow:hidden;touch-action:manipulation;cursor:zoom-in;align-items:flex-start}.vh--image{top:0;left:0;pointer-events:none}.vh--message{background-color:#000000a6;padding:8px 15px;border-radius:50px;text-align:center;line-height:initial}.vh--message-top{top:20px}.vh--message-bottom{bottom:20px}.vh--icon{transform:rotate(-45deg);display:block;font-size:20px;margin-right:5px;line-height:20px}.vh--close{line-height:0;background-color:#000000a6;border-radius:50px;font-size:23px;cursor:pointer;height:28px;width:28px}.vh--top-left{top:5px;left:5px}.vh--top-right{top:5px;right:5px}.vh--top-center{top:5px;left:50%;transform:translate(-50%)}.vh--bottom-left{bottom:5px;left:5px}.vh--bottom-right{bottom:5px;right:5px}.vh--bottom-center{bottom:5px;left:50%;transform:translate(-50%)}.vh--loading-o{top:0;left:0;width:100%;height:100%;background-color:#000000a6;pointer-events:none}.vh--loading{top:50%;left:50%;font-size:60px;line-height:60px;animation:vuehoverzoomspin 1s linear infinite;width:36px;height:70px}.vh--none{opacity:0}.vh--no-click img{pointer-events:none}@keyframes vuehoverzoomspin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}\n")();
+var vueImageZoomer_vue_vue_type_style_index_0_lang = "";
 var _export_sfc = (sfc, props) => {
   const target = sfc.__vccOpts || sfc;
   for (const [key, val] of props) {
@@ -94,6 +94,7 @@ const _sfc_main = {
       type: Boolean,
       default: true
     },
+    tapToClose: Boolean,
     breakpoints: Array,
     touchZoomPos: {
       type: Array,
@@ -101,6 +102,8 @@ const _sfc_main = {
         return [0.5, 0.5];
       }
     },
+    imgWidth: Number,
+    imgHeight: Number,
     lazyload: Boolean,
     rightClick: Boolean
   },
@@ -138,6 +141,7 @@ const _sfc_main = {
     async touchLogic() {
       await nextTick();
       let sx, sy;
+      let moved = false;
       this.$refs["vue-hover-zs"].addEventListener("touchstart", (e) => {
         if (this.zoomed) {
           if (e.cancelable) {
@@ -166,6 +170,7 @@ const _sfc_main = {
             this.y = -1;
           }
           this.touchPosition = "translate3d(" + this.x + "px," + this.y + "px,0)";
+          moved = true;
         }
       });
       this.$refs["vue-hover-zs"].addEventListener("touchend", (e) => {
@@ -173,6 +178,11 @@ const _sfc_main = {
           let touchmovement = e.changedTouches[0];
           this.cx = touchmovement.pageX - sx;
           this.cy = touchmovement.pageY - sy;
+          if (!moved && this.tapToClose) {
+            this.zoomed = false;
+            this.$emit("offZoom");
+          }
+          moved = false;
         }
       });
     },
@@ -332,7 +342,7 @@ const _hoisted_1 = { class: "vh--outer vh--rel" };
 const _hoisted_2 = ["srcset", "media"];
 const _hoisted_3 = ["srcset", "media"];
 const _hoisted_4 = ["srcset"];
-const _hoisted_5 = ["loading", "src", "alt"];
+const _hoisted_5 = ["loading", "src", "alt", "width", "height"];
 const _hoisted_6 = { key: 0 };
 const _hoisted_7 = ["srcset", "media"];
 const _hoisted_8 = ["srcset", "media"];
@@ -398,7 +408,9 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
             src: $props.regular,
             class: normalizeClass($props.imgClass),
             alt: $props.alt,
-            onLoad: _cache[0] || (_cache[0] = ($event) => (_ctx.$emit("regularLoaded"), $data.showSlot = false))
+            onLoad: _cache[0] || (_cache[0] = ($event) => (_ctx.$emit("regularLoaded"), $data.showSlot = false)),
+            width: $props.imgWidth,
+            height: $props.imgHeight
           }, null, 42, _hoisted_5)
         ], 2),
         $data.zoomed ? (openBlock(), createElementBlock("picture", _hoisted_6, [
@@ -466,10 +478,10 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       ], 34),
       createVNode(Transition, { name: "VueHoverfade" }, {
         default: withCtx(() => [
-          $data.touch && $data.zoomed && $data.loaded ? (openBlock(), createElementBlock("div", {
+          $data.touch && $data.zoomed && $data.loaded && !$props.tapToClose ? (openBlock(), createElementBlock("div", {
             key: 0,
             class: normalizeClass(["vh--close vh--abs vh--flex vh--jc vh--ai", "vh--" + $props.closePos]),
-            onClick: _cache[5] || (_cache[5] = withModifiers(($event) => $data.zoomed = false, ["stop"])),
+            onClick: _cache[5] || (_cache[5] = withModifiers(($event) => ($data.zoomed = false, _ctx.$emit("offZoom")), ["stop"])),
             innerHTML: "\xD7"
           }, null, 2)) : $data.loading ? (openBlock(), createElementBlock("div", _hoisted_17, _hoisted_19)) : createCommentVNode("", true)
         ]),

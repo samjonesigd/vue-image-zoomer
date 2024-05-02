@@ -24,7 +24,7 @@
                     :media="'(min-width:' + breakpoint.width + 'px)'"/>
                 </template>
                 <source v-if="regularWebp" :srcset="regularWebp" type="image/webp">    
-                <img :loading="lazyload ? 'lazy' : 'eager'" :src="regular" :class="imgClass" :alt="alt" @load="$emit('regularLoaded'), showSlot = false"/>
+                <img :loading="lazyload ? 'lazy' : 'eager'" :src="regular" :class="imgClass" :alt="alt" @load="$emit('regularLoaded'), showSlot = false" :width="imgWidth" :height="imgHeight"/>
             </picture>
             <picture v-if="zoomed">       
                 <template v-for="breakpoint in breakpoints" :key="breakpoint.width">
@@ -76,8 +76,8 @@
         <transition name="VueHoverfade">
             <div class="vh--close vh--abs vh--flex vh--jc vh--ai" 
             :class="'vh--' + closePos"
-            v-if="touch && zoomed && loaded" 
-            @click.stop="zoomed = false" 
+            v-if="touch && zoomed && loaded && !tapToClose" 
+            @click.stop="zoomed = false, $emit('offZoom')" 
             v-html="'&times;'">       
             </div>
             <div class="vh--loading-o vh--abs vh--flex vh--jc vh--ai" 
@@ -188,6 +188,7 @@ export default {
             type: Boolean,
             default: true
         },
+        tapToClose: Boolean,
         breakpoints: Array,
         touchZoomPos: {
             type: Array,
@@ -195,6 +196,8 @@ export default {
                 return [0.5, 0.5]
             }
         },
+        imgWidth: Number,
+        imgHeight: Number,
         lazyload: Boolean,
         rightClick: Boolean
     },
@@ -238,6 +241,7 @@ export default {
         async touchLogic(){ 
             await nextTick();
             let sx,sy;
+            let moved = false;
             //touch start
             this.$refs['vue-hover-zs'].addEventListener('touchstart',(e) => {
                 if(this.zoomed){
@@ -246,8 +250,7 @@ export default {
                     }
                     let touchmovement = e.changedTouches[0]
                     sx=touchmovement.pageX-this.cx;
-                    sy=touchmovement.pageY-this.cy; 
-
+                    sy=touchmovement.pageY-this.cy;
                 }
             });
 
@@ -274,6 +277,7 @@ export default {
 
                     this.touchPosition='translate3d('+
                     (this.x)+'px,'+(this.y)+'px,0)';
+                    moved = true;
                 } 
             }); 
 
@@ -283,6 +287,11 @@ export default {
                     let touchmovement = e.changedTouches[0]
                     this.cx=touchmovement.pageX-sx;
                     this.cy=touchmovement.pageY-sy;
+                    if(!moved && this.tapToClose){
+                        this.zoomed = false;
+                        this.$emit('offZoom');                        
+                    }
+                    moved = false;
                 }
             });
         },
