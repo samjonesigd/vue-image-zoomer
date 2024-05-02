@@ -153,6 +153,7 @@ The following props can be added to the html above
 | right-click            | Boolean | true   | Set to false to disable right click on images (stop easy image stealing) |
 | show-message            | Boolean | true   | Set to false to hide zoom message on non-touch devices |
 | show-message-touch            | Boolean | true   | Set to false to hide zoom message on touch devices |
+| tap-to-close            | Boolean | false   | Set to true to tap to close zoom on mobile, instead of the close button |
 | touch-message            | String | <span class="vue-hover-zoom-icon">&#9906;</span> Tap to zoom   | To change the message that appears on top of the image before you tap to zoom on a touch screen, accepts html|
 | touch-zoom-pos            | Array | [0.5, 0.5]   | X & Y position from top left of where the zoom starts on touch devices e.g. `[0.5, 0.5]` the default, is center, `[0, 0]` is top left. Max value is 1, min value is 0. |
 | zoom            | String |  Regular image  | **Recommended** Path to the zoom image source. If zoom not selected then will use the regular image times by 2.|

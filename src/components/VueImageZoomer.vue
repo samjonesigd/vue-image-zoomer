@@ -199,7 +199,10 @@ export default {
         imgWidth: Number,
         imgHeight: Number,
         lazyload: Boolean,
-        rightClick: Boolean
+        rightClick: {
+            type: Boolean,
+            default: true
+        },
     },
 
     watch: { 
