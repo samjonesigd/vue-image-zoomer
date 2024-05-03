@@ -146,6 +146,8 @@ The following props can be added to the html above
 | click-message            | String | <span class="vue-hover-zoom-icon">&#9906;</span> Click to zoom   | To change the message that appears on top of the image before you zoom when click-zoom is set to true, accepts html|
 | hover-message            | String | <span class="vue-hover-zoom-icon">&#9906;</span> Hover to zoom   | To change the message that appears on top of the image before you hover to zoom, accepts html|
 | img-class            | String |    | Class for regular image, e.g. 'img-fluid' in bootstrap|
+| img-height            | Number |    | img height attribute for improved lighthouse performance |
+| img-width            | Number |    | img width attribute for improved lighthouse performance |
 | lazyload            | Boolean |  false  | To lazyload the regular image, uses HTML loading attribute |
 | message-pos            | String |  bottom  | Position of the message that appears on top of the image before you zoom: **top, bottom**|
 | regular            | String |    | **Required** Path to the regular image source|
