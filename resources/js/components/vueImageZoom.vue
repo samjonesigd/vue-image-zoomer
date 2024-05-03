@@ -74,8 +74,8 @@
 		<transition name="VueHoverfade">
 			<div class="vh--close vh--abs vh--flex vh--jc vh--ai" 
 			:class="'vh--' + closePos"
-			v-if="touch && zoomed && loaded" 
-			@click.stop="zoomed = false" 
+			v-if="touch && zoomed && loaded && !tapToClose" 
+			@click.stop="zoomed = false, $emit('off-zoom')" 
 			v-html="'&times;'">				
 			</div>
 			<div class="vh--loading-o vh--abs vh--flex vh--jc vh--ai" 
@@ -191,6 +191,7 @@ export default {
 	        }
 	    },
     	lazyload: Boolean,
+    	tapToClose: Boolean,
     	lazyloadPlaceholder: {
     		type: String,
     		default: ''
@@ -224,6 +225,7 @@ export default {
     		this.touch = true;
     	}  		
     	let sx,sy;
+    	let moved = false;
 		//touch start
 		this.$refs['vue-hover-zs'].addEventListener('touchstart', function(e){
 			if(this.zoomed){
@@ -260,6 +262,7 @@ export default {
 
 		 		this.touchPosition='translate3d('+
 		 		(this.x)+'px,'+(this.y)+'px,0)';
+		 		moved = true;
 		 	}
 		}.bind(this)); 
 
@@ -269,6 +272,11 @@ export default {
 				let touchmovement = e.changedTouches[0]
 		 		this.cx=touchmovement.pageX-sx;
 		 		this.cy=touchmovement.pageY-sy;
+		 		if(!moved && this.tapToClose){
+                    this.zoomed = false;
+                    this.$emit('offZoom');                        
+                }
+                moved = false;
 			}
 		}.bind(this)); 
     },
