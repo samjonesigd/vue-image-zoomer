@@ -1,6 +1,6 @@
 {
   "name": "vue-image-zoomer",
-  "version": "2.2.4",
+  "version": "2.3.0",
   "description": "Repsonsive image zoom component for Vue.js 3, that also works on touch devices. Legacy versions available for Vue 2.",
   "keywords": [
     "vue",
