@@ -32,7 +32,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build && vue-tsc --declaration --emitDeclarationOnly --outFile dist/vue-image-zoomer.d.ts src/components/vueImageZoomer.vue",
+    "build": "vite build && vue-tsc --declaration --emitDeclarationOnly --outFile dist/vue-image-zoomer.d.ts src/components/VueImageZoomer.vue",
     "preview": "vite preview"
   },
   "dependencies": {
