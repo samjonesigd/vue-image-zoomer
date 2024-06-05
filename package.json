@@ -1,6 +1,6 @@
 {
   "name": "vue-image-zoomer",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "description": "Repsonsive image zoom component for Vue.js 3, that also works on touch devices. Legacy versions available for Vue 2.",
   "keywords": [
     "vue",
@@ -11,10 +11,12 @@
     "magnify",
     "product",
     "webp",
-    "lazyload"
+    "lazyload",
+    "typescript"
   ],
   "main": "./dist/vue-image-zoomer.umd.js",
   "module": "./dist/vue-image-zoomer.es.js",
+  "types": "./dist/vue-image-zoomer.d.ts",
   "export": {
     ".": {
       "import": "./dist/vue-image-zoomer.es.js",
@@ -30,7 +32,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && vue-tsc --declaration --emitDeclarationOnly --outFile dist/vue-image-zoomer.d.ts src/components/vueImageZoomer.vue",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -38,6 +40,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^2.3.3",
-    "vite": "^2.9.9"
+    "vite": "^2.9.9",
+    "vue-tsc": "^2.0.19"
   }
 }
