@@ -1,23 +1,22 @@
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
 
-// https://vitejs.dev/config/
 export default defineConfig({
-	build: {
-		lib: {
-			entry: "/src/index.js",
-			name: "vue-image-zoomer",
-			filename: (format) => `${format}.js`
-		},
-		rollupOptions: {
-			external: ["vue"],
-			output: {
-				globals: {
-					vue: "vue"					
-				},
-				exports: "named"
-			}
-		}
-	},
-  	plugins: [vue()]
+  	plugins: [vue()],
+  	build: {
+	    lib: {
+	      	entry: 'src/index.js',
+	      	name: 'VueImageZoomer',
+	      	formats: ['es', 'umd'],	      	
+	    },
+	    rollupOptions: {
+	      	external: ['vue'],
+	      	output: {
+	        	globals: {
+	          		vue: 'Vue',
+	        	},
+	        	exports: 'named', // Ensure this is set to 'named'
+	      	},
+	    },
+  	},
 });
