@@ -274,7 +274,7 @@ export default {
 		 		this.cy=touchmovement.pageY-sy;
 		 		if(!moved && this.tapToClose){
                     this.zoomed = false;
-                    this.$emit('offZoom');                        
+                    this.$emit('off-zoom');                        
                 }
                 moved = false;
 			}
