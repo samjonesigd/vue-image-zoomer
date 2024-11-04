@@ -1,4 +1,5 @@
 *
+!dist/vue-image-zoomer.d.ts
 !dist/vue-image-zoomer.es.js
 !dist/vue-image-zoomer.umd.js
 !dist/style.css
