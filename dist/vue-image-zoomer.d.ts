@@ -1,4 +1,4 @@
-declare module "VueImageZoomer.vue" {
+declare module "vue-image-zoomer" {
     const _default: import("vue").DefineComponent<Readonly<import("vue").ComponentPropsOptions<{
         [x: string]: unknown;
     }>>, any, {
