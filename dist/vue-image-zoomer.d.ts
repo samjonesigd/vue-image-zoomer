@@ -1,4 +1,4 @@
-declare module "vue-image-zoomer" {
+declare module "vueImageZoom.vue" {
     const _default: import("vue").DefineComponent<{
         regular: StringConstructor;
         regularWebp: StringConstructor;
