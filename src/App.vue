@@ -170,7 +170,7 @@
 
 <script>
 import VueImageZoomer from './components/VueImageZoomer.vue'
-import '../dist/vue-image-zoomer.css';
+import '../dist/style.css';
 
 export default {
   name: 'App',

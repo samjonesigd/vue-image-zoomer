@@ -7,7 +7,8 @@ export default defineConfig({
 	    lib: {
 	      	entry: 'src/index.js',
 	      	name: 'VueImageZoomer',
-	      	formats: ['es', 'umd'],	      	
+	      	formats: ['es', 'umd'],
+			fileName: (format) => `vue-image-zoomer.${format}.js`    	
 	    },
 	    rollupOptions: {
 	      	external: ['vue'],
