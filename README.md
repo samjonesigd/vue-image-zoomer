@@ -173,6 +173,8 @@ The events that the component emits.
 | on-zoom            | Fires when you are zooming |
 | zoom-loaded            | Fires when the zoom image has loaded|
 | zoom-loading            | Fires when the zoom image is loading|
+| regular-error            | Fires when the regular image load fails|
+| zoom-error            | Fires when the regular image load fails|
 
 ## License
 

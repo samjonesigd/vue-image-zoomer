@@ -164,6 +164,25 @@
               zoom: 'img/sky-zoom-inverted.jpg'
             }           
           ]"/>
+
+    <h2 class="w-100 text-center mt-5 pt-3 border-top">
+        Error handling
+      </h2>
+<code>
+<pre class="bg-light border rounded p-2 d-inline-block">
+&lt;vue-image-zoom 
+  regular="/img/sky-bad.jpg" 
+  zoom="/img/sky-zoom-bad.jpg" 
+  @regular-error="(error) => error.target.src = '/img/sky.jpg'"
+  @zoom-error="(error) => error.target.src = '/img/sky-zoom.jpg'" /&gt;
+</pre>
+</code>
+      <vue-image-zoomer 
+        regular="/img/sky-bad.jpg" 
+        zoom="/img/sky-zoom-bad.jpg" 
+        @regular-error="(error) => error.target.src = '/img/sky.jpg'"
+        @zoom-error="(error) => error.target.src = '/img/sky-zoom.jpg'" />
+        
     </div>      
   </div>
 </template>
