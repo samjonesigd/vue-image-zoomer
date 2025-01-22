@@ -1,7 +1,5 @@
-declare module "vue-image-zoomer" {
-    const _default: import("vue").DefineComponent<Readonly<import("vue").ComponentPropsOptions<{
-        [x: string]: unknown;
-    }>>, any, {
+declare module "VueImageZoomer.vue" {
+    const _default: import("vue").DefineComponent<{}, {}, {
         touch: boolean;
         zoomed: boolean;
         x: number;
@@ -39,17 +37,34 @@ declare module "vue-image-zoomer" {
         mobilePos(): void;
         offset(): void;
         mousePos(e: any): void;
-    }, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, ("onZoom" | "offZoom" | "regularLoaded" | "zoomLoaded" | "zoomLoading")[], "onZoom" | "offZoom" | "regularLoaded" | "zoomLoaded" | "zoomLoading", import("vue").PublicProps, Readonly<readonly string[] | import("vue").ExtractPropTypes<Readonly<import("vue").ComponentObjectPropsOptions<{
-        [x: string]: unknown;
-    }>>>> & {
+    }, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, ("onZoom" | "offZoom" | "regularLoaded" | "zoomLoaded" | "zoomLoading" | "regularError" | "zoomError")[], "onZoom" | "offZoom" | "regularLoaded" | "zoomLoaded" | "zoomLoading" | "regularError" | "zoomError", import("vue").PublicProps, Readonly<{}> & Readonly<{
         onOnZoom?: (...args: any[]) => any;
         onOffZoom?: (...args: any[]) => any;
         onRegularLoaded?: (...args: any[]) => any;
         onZoomLoaded?: (...args: any[]) => any;
         onZoomLoading?: (...args: any[]) => any;
-    }, {
-        readonly [x: number]: string;
-    } | {}, {}>;
+        onRegularError?: (...args: any[]) => any;
+        onZoomError?: (...args: any[]) => any;
+    }>, {
+        clickZoom: boolean;
+        tapToClose: boolean;
+        lazyload: boolean;
+        imgClass: string;
+        zoomAmount: number;
+        hoverMessage: string;
+        touchMessage: string;
+        clickMessage: string;
+        closePos: string;
+        messagePos: string;
+        showMessage: boolean;
+        showMessageTouch: boolean;
+        touchZoomPos: unknown[];
+        rightClick: boolean;
+    }, {}, {}, {
+        clickOutside: {
+            mounted(el: any, binding: import("vue").DirectiveBinding<any, string, string>): void;
+            unmounted(el: any): void;
+        };
+    }, string, import("vue").ComponentProvideOptions, true, {}, any>;
     export default _default;
-
 }

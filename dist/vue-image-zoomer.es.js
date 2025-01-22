@@ -9,7 +9,7 @@ var _export_sfc = (sfc, props) => {
 };
 const _sfc_main = {
   name: "VueImageZoomer",
-  emits: ["onZoom", "offZoom", "regularLoaded", "zoomLoaded", "zoomLoading"],
+  emits: ["onZoom", "offZoom", "regularLoaded", "zoomLoaded", "zoomLoading", "regularError", "zoomError"],
   directives: {
     clickOutside: {
       mounted(el, binding) {
@@ -232,6 +232,9 @@ const _sfc_main = {
     loadImage(src, callback) {
       const sprite = new Image();
       sprite.onload = callback;
+      sprite.onerror = (e) => {
+        this.$emit("zoomError", e);
+      };
       sprite.src = src;
     },
     loadZoom() {
@@ -361,13 +364,6 @@ const _hoisted_17 = {
   key: 1,
   class: "vh--loading-o vh--abs vh--flex vh--jc vh--ai"
 };
-const _hoisted_18 = /* @__PURE__ */ createElementVNode("div", {
-  class: "vh--loading",
-  innerHTML: "\u25E0"
-}, null, -1);
-const _hoisted_19 = [
-  _hoisted_18
-];
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   const _directive_click_outside = resolveDirective("click-outside");
   return openBlock(), createElementBlock(Fragment, null, [
@@ -375,11 +371,11 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     withDirectives((openBlock(), createElementBlock("div", _hoisted_1, [
       createElementVNode("div", {
         class: normalizeClass(["vh--holder vh--rel vh--flex vh--jc", { "vh--no-click": !$props.rightClick }]),
-        onMouseenter: _cache[1] || (_cache[1] = ($event) => $options.isZoom(true, "hover")),
-        onMouseleave: _cache[2] || (_cache[2] = ($event) => $options.isZoom(false, "hover")),
-        onMousemove: _cache[3] || (_cache[3] = (...args) => $options.mousePos && $options.mousePos(...args)),
+        onMouseenter: _cache[4] || (_cache[4] = ($event) => $options.isZoom(true, "hover")),
+        onMouseleave: _cache[5] || (_cache[5] = ($event) => $options.isZoom(false, "hover")),
+        onMousemove: _cache[6] || (_cache[6] = (...args) => $options.mousePos && $options.mousePos(...args)),
         ref: "vue-hover-zs",
-        onClick: _cache[4] || (_cache[4] = ($event) => $options.isZoom(!$data.zoomed, "click"))
+        onClick: _cache[7] || (_cache[7] = ($event) => $options.isZoom(!$data.zoomed, "click"))
       }, [
         createElementVNode("picture", {
           class: normalizeClass({ "vh--none": $data.zoomed })
@@ -413,7 +409,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
             alt: $props.alt,
             onLoad: _cache[0] || (_cache[0] = ($event) => (_ctx.$emit("regularLoaded"), $data.showSlot = false)),
             width: $props.imgWidth,
-            height: $props.imgHeight
+            height: $props.imgHeight,
+            onError: _cache[1] || (_cache[1] = (e) => _ctx.$emit("regularError", e))
           }, null, 42, _hoisted_5)
         ], 2),
         $data.zoomed ? (openBlock(), createElementBlock("picture", _hoisted_6, [
@@ -452,13 +449,15 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
             key: 1,
             src: $data.options.zoom,
             class: "vh--image vh--abs",
-            style: normalizeStyle({ width: $data.zoomWidth + "px", transform: "translate(-" + $data.x + "px,-" + $data.y + "px)" })
-          }, null, 12, _hoisted_12)) : (openBlock(), createElementBlock("img", {
+            style: normalizeStyle({ width: $data.zoomWidth + "px", transform: "translate(-" + $data.x + "px,-" + $data.y + "px)" }),
+            onError: _cache[2] || (_cache[2] = (e) => _ctx.$emit("zoomError", e))
+          }, null, 44, _hoisted_12)) : (openBlock(), createElementBlock("img", {
             key: 2,
             src: $data.options.zoom,
             class: "vh--image vh--abs",
-            style: normalizeStyle("width:" + $data.zoomWidth + "px;transform:" + $data.touchPosition)
-          }, null, 12, _hoisted_13))
+            style: normalizeStyle("width:" + $data.zoomWidth + "px;transform:" + $data.touchPosition),
+            onError: _cache[3] || (_cache[3] = (e) => _ctx.$emit("zoomError", e))
+          }, null, 44, _hoisted_13))
         ])) : createCommentVNode("", true),
         createVNode(Transition, { name: "VueHoverfade" }, {
           default: withCtx(() => [
@@ -484,9 +483,14 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
           $data.touch && $data.zoomed && $data.loaded && !$props.tapToClose ? (openBlock(), createElementBlock("div", {
             key: 0,
             class: normalizeClass(["vh--close vh--abs vh--flex vh--jc vh--ai", "vh--" + $props.closePos]),
-            onClick: _cache[5] || (_cache[5] = withModifiers(($event) => ($data.zoomed = false, _ctx.$emit("offZoom")), ["stop"])),
+            onClick: _cache[8] || (_cache[8] = withModifiers(($event) => ($data.zoomed = false, _ctx.$emit("offZoom")), ["stop"])),
             innerHTML: "\xD7"
-          }, null, 2)) : $data.loading ? (openBlock(), createElementBlock("div", _hoisted_17, _hoisted_19)) : createCommentVNode("", true)
+          }, null, 2)) : $data.loading ? (openBlock(), createElementBlock("div", _hoisted_17, _cache[9] || (_cache[9] = [
+            createElementVNode("div", {
+              class: "vh--loading",
+              innerHTML: "\u25E0"
+            }, null, -1)
+          ]))) : createCommentVNode("", true)
         ]),
         _: 1
       })
