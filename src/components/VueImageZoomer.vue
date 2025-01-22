@@ -24,7 +24,7 @@
                     :media="'(min-width:' + breakpoint.width + 'px)'"/>
                 </template>
                 <source v-if="regularWebp" :srcset="regularWebp" type="image/webp">    
-                <img :loading="lazyload ? 'lazy' : 'eager'" :src="regular" :class="imgClass" :alt="alt" @load="$emit('regularLoaded'), showSlot = false" :width="imgWidth" :height="imgHeight"/>
+                <img :loading="lazyload ? 'lazy' : 'eager'" :src="regular" :class="imgClass" :alt="alt" @load="$emit('regularLoaded'), showSlot = false" :width="imgWidth" :height="imgHeight" @error="(e) => $emit('regularError', e)" />
             </picture>
             <picture v-if="zoomed">       
                 <template v-for="breakpoint in breakpoints" :key="breakpoint.width">
@@ -49,10 +49,12 @@
                 <img :src="options.zoom" 
                 class="vh--image vh--abs" 
                 :style="{width: zoomWidth + 'px', transform:'translate(-' + x + 'px,-' + y + 'px)'}"
+                @error="(e) => $emit('zoomError', e)"
                 v-if="!touch"/>
                 <img :src="options.zoom" 
                 class="vh--image vh--abs" 
                 :style="'width:' + zoomWidth + 'px;transform:' + touchPosition"
+                @error="(e) => $emit('zoomError', e)"
                 v-else/>
             </picture>
             <transition name="VueHoverfade">
@@ -98,7 +100,7 @@ export default {
 
     name: 'VueImageZoomer', 
 
-    emits: ['onZoom', 'offZoom', 'regularLoaded', 'zoomLoaded', 'zoomLoading'],
+    emits: ['onZoom', 'offZoom', 'regularLoaded', 'zoomLoaded', 'zoomLoading', 'regularError', 'zoomError'],
 
     directives: {
         clickOutside: {
@@ -343,6 +345,9 @@ export default {
         loadImage(src, callback) {
             const sprite = new Image();
             sprite.onload = callback;
+            sprite.onerror = (e) => {
+                this.$emit('zoomError', e);
+            };
             sprite.src = src;
         },
         loadZoom(){
