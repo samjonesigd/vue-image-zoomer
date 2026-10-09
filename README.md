@@ -151,7 +151,7 @@ The jpg/png images are used as a fallback in browsers that don't support WebP.
   zoom-webp="/img/product-zoom.webp" />
 ```
 
-> If you set `regular-webp`, set `zoom-webp` too. Otherwise the regular WebP image is used for the zoom at 2x.
+If there's no `zoom` image, `regular-webp` is used for the zoom too. If there's a `zoom` image but no `zoom-webp`, the `zoom` image is used.
 
 ### Breakpoints
 
@@ -223,8 +223,8 @@ The zoom image doesn't need the same aspect ratio as the regular image. The comp
 | `regular` | String | | **Required.** Path to the regular image. |
 | `zoom` | String | `regular` at 2x | **Recommended.** Path to the zoom image. |
 | `regular-webp` | String | | Path to a WebP version of the regular image. |
-| `zoom-webp` | String | `regular-webp` | Path to a WebP version of the zoom image. |
-| `zoom-amount` | Number | Zoom image's natural size | How much to zoom, as a multiple of the regular image's displayed size, e.g. `2`. |
+| `zoom-webp` | String | `regular-webp` if there's no `zoom` | Path to a WebP version of the zoom image. |
+| `zoom-amount` | Number | Zoom image's natural size, or `2` with no `zoom` | How much to zoom, as a multiple of the regular image's displayed size, e.g. `2`. |
 | `breakpoints` | Array | | Different images at different screen sizes. See [Breakpoints](#breakpoints). |
 | `alt` | String | | Alt text for the regular image. |
 | `img-class` | String | | Class for the regular image, e.g. `img-fluid` in Bootstrap. |

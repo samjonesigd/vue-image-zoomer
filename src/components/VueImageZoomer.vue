@@ -28,19 +28,12 @@
             </picture>
             <picture v-if="zoomed">       
                 <template v-for="breakpoint in breakpoints" :key="breakpoint.width">
-                    <source v-if="breakpoint.zoomWebp" 
-                    :srcset="breakpoint.zoomWebp" 
+                    <source v-if="breakpointZoom(breakpoint).zoomWebp" 
+                    :srcset="breakpointZoom(breakpoint).zoomWebp" 
                     type="image/webp"
                     :media="'(min-width:' + breakpoint.width + 'px)'"/>
-                    <source v-else-if="breakpoint.regularWebp" 
-                    :srcset="breakpoint.regularWebp" 
-                    type="image/webp"
-                    :media="'(min-width:' + breakpoint.width + 'px)'"/>
-                    <source v-if="breakpoint.zoom" 
-                    :srcset="breakpoint.zoom"
-                    :media="'(min-width:' + breakpoint.width + 'px)'"/>
-                    <source v-else-if="breakpoint.regular" 
-                    :srcset="breakpoint.regular"
+                    <source v-if="breakpointZoom(breakpoint).zoom" 
+                    :srcset="breakpointZoom(breakpoint).zoom"
                     :media="'(min-width:' + breakpoint.width + 'px)'"/>
                 </template>
                 <source v-if="options.zoomWebp" 
@@ -326,14 +319,13 @@ export default {
             this.options.zoom = this.zoom;
             this.options.zoomWebp = this.zoomWebp;
 
+            //no zoom image so zoom the regular image, only fall back to the regular webp when there's no zoom image
             if(!this.zoom){
                 this.options.zoom = this.regular;
-                this.options.zoomAmount = 2;
-            }
-
-            if(!this.zoomWebp && this.regularWebp){
-                this.options.zoomWebp = this.regularWebp;
-                this.options.zoomAmount = 2;
+                if(!this.zoomWebp){
+                    this.options.zoomWebp = this.regularWebp;
+                }
+                this.options.zoomAmount = this.zoomAmount || 2;
             }
             this.resize();      
         },
@@ -354,6 +346,13 @@ export default {
                 callback(feature, false);
             };
             img.src = "data:image/webp;base64," + kTestImages[feature];
+        },
+        breakpointZoom(breakpoint){
+            //zoom image for a breakpoint, only fall back to the regular webp when there's no zoom image
+            if(breakpoint.zoom){
+                return { zoom: breakpoint.zoom, zoomWebp: breakpoint.zoomWebp };
+            }
+            return { zoom: breakpoint.regular, zoomWebp: breakpoint.zoomWebp || breakpoint.regularWebp };
         },
         loadImage(src, callback, errorCallback) {
             const sprite = new Image();
@@ -397,31 +396,12 @@ export default {
                 this.$emit('zoomLoading');
             }
             //load zoom image
-            let zoomToLoad = this.options.zoom;
-            if(this.breakpoints){
-                this.breakpoints.forEach( (item) => {
-                    if(window.innerWidth >= item.width){
-                        if(item.zoom){
-                            zoomToLoad = item.zoom;             
-                        } else {
-                            zoomToLoad = item.regular;
-                        }
-                    }
-                });
-            }
-            if(this.webp_supported && this.options.zoomWebp){
-                zoomToLoad = this.options.zoomWebp;
-                if(this.breakpoints){
-                    this.breakpoints.forEach( (item) => {
-                        if(window.innerWidth >= item.width){
-                            if(item.zoomWebp){
-                                zoomToLoad = item.zoomWebp;               
-                            } else {
-                                zoomToLoad = item.regularWebp;
-                            }
-                        }
-                    });
-                }
+            //use the first matching breakpoint, the same as the picture element does
+            const breakpoint = this.breakpoints && this.breakpoints.find((item) => window.innerWidth >= item.width);
+            const source = breakpoint ? this.breakpointZoom(breakpoint) : this.options;
+            let zoomToLoad = source.zoom;
+            if(this.webp_supported && source.zoomWebp){
+                zoomToLoad = source.zoomWebp;
             }
             this.loadImage(zoomToLoad,(src) => {
                 this.zoomRatio = src.target.height / src.target.width;
