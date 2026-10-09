@@ -29,6 +29,8 @@ mix.webpackConfig({
 		]
 	},
 	output: {
-		libraryTarget: 'umd'
+		libraryTarget: 'umd',
+		//'window' breaks requiring the bundle in node, e.g. nuxt server side rendering
+		globalObject: 'this'
 	}
 });

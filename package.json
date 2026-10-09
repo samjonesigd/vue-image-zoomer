@@ -1,7 +1,7 @@
 {
     "name": "vue-image-zoomer",
-    "version": "1.7.4",
-    "description": "Repsonsive image zoom component for Vue.js 2, that also works on touch devices.",
+    "version": "1.8.0",
+    "description": "Responsive image zoom component for Vue.js 2, that also works on touch devices.",
     "keywords": [
         "vue",
         "vue2",
@@ -19,7 +19,7 @@
     "homepage": "https://samueljon.es/vue-image-zoomer",
     "repository": {
         "type": "git",
-        "url": "git@github.com:samjonesigd/vue-image-zoom.git"
+        "url": "git+https://github.com/samjonesigd/vue-image-zoomer.git"
     },
     "scripts": {
         "dev": "npm run development",
@@ -28,15 +28,15 @@
         "watch-poll": "npm run watch -- --watch-poll",
         "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
         "prod": "npm run production",
-        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js && vue-tsc --declaration --emitDeclarationOnly --outFile dist/vue-image-zoomer.d.ts resources/js/components/vueImageZoom.vue"
+        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js && cp types/vue-image-zoomer.d.ts dist/vue-image-zoomer.d.ts"
     },
     "devDependencies": {
         "cross-env": "^7.0.3",
         "laravel-mix": "^5.0.1",
         "vue-template-compiler": "^2.6.12",
-        "vue-tsc": "^2.0.19"        
+        "vue": "^2.6.12"
     },
-    "dependencies": {        
+    "peerDependencies": {
         "vue": "^2.6.12"
     }
 }

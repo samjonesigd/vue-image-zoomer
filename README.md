@@ -1,185 +1,260 @@
-# Vue Image Zoomer
+# Vue Image Zoomer (Vue 2)
 
-Lightweight responsive image zoom component for Vue.js 2, that also works on touch devices. Perfect for zooming on product images on an ecommerce website.
+Lightweight, responsive image zoom component for Vue 2. Hover (or click) to zoom on desktop, tap and drag to zoom on touch devices. Ideal for product images on ecommerce sites.
 
-Works on hover(default) or click on mouse devices, tap to zoom on touch screens.
+**[Demo](https://samueljon.es/vue-image-zoomer)**
 
-Performance and pageload is important, zoom images do not load until needed, so only the regular sized images load on pageload. Webp format also available with jpg/png backwards compatabilty for browsers that do not yet support webp. There is also an option to lazyload the regular image and breakpoints to have different res images on different screen sizes.
+> This is the legacy version for Vue 2. For Vue 3, use the [latest version](https://www.npmjs.com/package/vue-image-zoomer).
 
-Zoom source is not needed but recommended for a sharper zoom, if there is no zoom image selected then the regular image will be zoomed by 2 by default.
-
-Demo: <https://samueljon.es/vue-image-zoomer>
+- **Fast page loads**: the zoom image only loads when it's needed
+- **Touch support**: tap to zoom, drag to pan, with a close button or tap to close
+- **WebP** with automatic jpg/png fallback for browsers that don't support it
+- **Breakpoints** to serve different images at different screen sizes
+- **Lazyloading** and a placeholder slot to reduce layout shift
+- **Nuxt 2 / SSR** compatible
+- **TypeScript** declarations included
+- No stylesheet to import, styles are included
 
 <a href="https://www.buymeacoffee.com/samueljones" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
+
+## Contents
+
+- [Installation](#installation)
+- [Setup](#setup)
+- [Usage](#usage)
+- [Props](#props)
+- [Events](#events)
+- [License](#license)
 
 ## Installation
 
 ```sh
-npm i vue-image-zoomer
+npm i vue-image-zoomer@legacy
 ```
 
-Usage with Webpack or other module bundlers:
+## Setup
+
+### Global registration
 
 ```js
 import Vue from 'vue';
-import imageZoom from 'vue-image-zoomer';
-
-new Vue({
-    el: '#app',
-    components:{
-    	imageZoom
-    }
-});
-
-// or
-
-const ImageZoom = require('vue-image-zoomer').default;
+import ImageZoom from 'vue-image-zoomer';
 
 Vue.component('image-zoom', ImageZoom);
 ```
 
-## Usage examples
+### Local registration
+
+```js
+import ImageZoom from 'vue-image-zoomer';
+
+export default {
+  components: {
+    ImageZoom
+  }
+};
+```
+
+### CommonJS
+
+```js
+const ImageZoom = require('vue-image-zoomer').default;
+```
+
+### Nuxt 2
+
+Create a plugin, e.g. `plugins/vue-image-zoomer.js`:
+
+```js
+import Vue from 'vue';
+import ImageZoom from 'vue-image-zoomer';
+
+Vue.component('image-zoom', ImageZoom);
+```
+
+Then add it to `nuxt.config.js`:
+
+```js
+export default {
+  plugins: ['~/plugins/vue-image-zoomer.js']
+};
+```
+
+### TypeScript
+
+Type declarations are included, as well as the `ImageZoomProps` and `ImageZoomBreakpoint` types:
+
+```ts
+import type { ImageZoomBreakpoint } from 'vue-image-zoomer';
+```
+
+## Usage
+
+### Basic
 
 ```html
-<!-- Example without zoom image -->
-<image-zoom 
-	regular="path-to-regular.jpg">				
+<!-- Zoom image (recommended for a sharp zoom) -->
+<image-zoom
+  regular="/img/product.jpg"
+  zoom="/img/product-zoom.jpg"
+  alt="Product">
 </image-zoom>
 
-<!-- jpg example -->
-<image-zoom 
-	regular="path-to-regular.jpg" 
-	zoom="path-to-zoom.jpg">				
-</image-zoom>
+<!-- No zoom image: the regular image is zoomed 2x -->
+<image-zoom regular="/img/product.jpg"></image-zoom>
+```
 
-<!-- placeholder slot, helps with CLS improvements -->
-<image-zoom 
-	regular="path-to-regular.jpg" 
-	zoom="path-to-zoom.jpg">
-	<img src="low-res-placeholder.jpg" />
-</image-zoom>
+By default the zoom image is shown at its natural size. Use `zoom-amount` to set it to a multiple of the regular image's displayed size instead:
 
-<!-- png example -->
-<image-zoom 
-	regular="path-to-regular.png" 
-	zoom="path-to-zoom.png">				
-</image-zoom>
-
-<!-- webp example -->
-<image-zoom 
-	regular="path-to-regular.jpg" 
-	regular-webp="path-to-regular.webp"
-	zoom="path-to-zoom.jpg"
-	zoom-webp="path-to-zoom.webp">				
+```html
+<image-zoom
+  regular="/img/product.jpg"
+  zoom="/img/product-zoom.jpg"
+  :zoom-amount="3">
 </image-zoom>
 ```
 
-## Placeholder
+### Click to zoom
 
-Placeholder slot, helps with CLS improvements & page jumping.
+Mouse devices zoom on hover by default. Use `click-zoom` to zoom on click instead. Touch devices always use tap to zoom.
 
 ```html
-<image-zoom 
-	regular="path-to-regular.jpg" 
-	zoom="path-to-zoom.jpg">
-	<img src="path-to-low-res-placeholder.jpg" />
+<image-zoom
+  regular="/img/product.jpg"
+  zoom="/img/product-zoom.jpg"
+  click-zoom>
 </image-zoom>
 ```
 
-## Carousel/Slider
+Clicking outside the image closes the zoom. Add `:close-on-click-outside="false"` to keep it open.
 
-Tested & works very well with [Vue Carousel](https://www.npmjs.com/package/vue-carousel). Untested on others.
+### Edge offset
 
-
-## Breakpoints
-
-This option is an array of objects that allows you to have different images on different screen sizes. For example to load a higher res image on desktop. 
-
-Order of the objects must start from highest min width, e.g. in the example below we start with the 1200 min width then 992. This is the min width of the browser in pixels when that breakpoint will show.
-
-Like without breakpoints, if using breakpoints, the zoom parameters aren't required but recommended for a higher quality zoom image, width and regular parameters are **required**. Addition parameters to the array are 'regularWebp' and 'zoomWebp' if using webp images(will be defaulted to standard if browser does not support webp).
+To see the edge of the zoom image, the cursor normally has to reach the very edge of the image. `edge-offset` makes the edges reachable sooner. For example, `0.1` means the zoom is fully panned once the cursor is within 10% of an edge.
 
 ```html
-<image-zoom 
-	regular="path-to-regular.jpg" 
-	zoom="path-to-zoom.jpg"
-	:breakpoints="[
-		{
-			width: 1200,
-			regular: 'path-to-regular-1200.jpg',
-			zoom: 'path-to-zoom-1200.jpg'
-		},
-		{
-			width: 992,
-			regular: 'path-to-regular-992.jpg',
-			zoom: 'path-to-zoom-992.jpg'
-		}						
-	]">				
-</image-zoom>
-
-<!-- webp example -->
-<image-zoom 
-	regular="path-to-regular.jpg" 
-	regular-webp="path-to-regular.webp" 
-	zoom="path-to-zoom.jpg"
-	zoom-webp="path-to-zoom.webp" 
-	:breakpoints="[
-		{
-			width: 1200,
-			regular: 'path-to-regular-1200.jpg',
-			regularWebp: 'path-to-regular-1200.webp',
-			zoom: 'path-to-zoom-1200.jpg'
-			zoomWebp: 'path-to-zoom-1200.webp'
-		},
-		{
-			width: 992,
-			regular: 'path-to-regular-992.jpg',
-			regularWebp: 'path-to-regular-992.webp',
-			zoom: 'path-to-zoom-992.jpg'
-			zoomWebp: 'path-to-zoom-992.webp'
-		}						
-	]">				
+<image-zoom
+  regular="/img/product.jpg"
+  zoom="/img/product-zoom.jpg"
+  :edge-offset="0.1">
 </image-zoom>
 ```
+
+### WebP
+
+The jpg/png images are used as a fallback in browsers that don't support WebP.
+
+```html
+<image-zoom
+  regular="/img/product.jpg"
+  regular-webp="/img/product.webp"
+  zoom="/img/product-zoom.jpg"
+  zoom-webp="/img/product-zoom.webp">
+</image-zoom>
+```
+
+If there's no `zoom` image, `regular-webp` is used for the zoom too. If there's a `zoom` image but no `zoom-webp`, the `zoom` image is used.
+
+### Breakpoints
+
+Serve different images at different screen sizes, for example higher resolution images on desktop. Each `width` is a minimum browser width in pixels. **List breakpoints from largest to smallest width.** The `regular` and `zoom` props are used below the smallest breakpoint.
+
+`width` and `regular` are required. `zoom`, `regularWebp` and `zoomWebp` are optional.
+
+```html
+<image-zoom
+  regular="/img/product-sm.jpg"
+  regular-webp="/img/product-sm.webp"
+  zoom="/img/product-sm-zoom.jpg"
+  zoom-webp="/img/product-sm-zoom.webp"
+  :breakpoints="[
+    {
+      width: 1200,
+      regular: '/img/product-lg.jpg',
+      regularWebp: '/img/product-lg.webp',
+      zoom: '/img/product-lg-zoom.jpg',
+      zoomWebp: '/img/product-lg-zoom.webp'
+    },
+    {
+      width: 992,
+      regular: '/img/product-md.jpg',
+      regularWebp: '/img/product-md.webp',
+      zoom: '/img/product-md-zoom.jpg',
+      zoomWebp: '/img/product-md-zoom.webp'
+    }
+  ]">
+</image-zoom>
+```
+
+### Placeholder
+
+Content in the default slot is shown until the regular image has loaded, which helps reduce layout shift. A small, low resolution version of the image works well. The slot isn't shown when `lazyload` is set.
+
+```html
+<image-zoom regular="/img/product.jpg" zoom="/img/product-zoom.jpg">
+  <img src="/img/product-tiny.jpg" alt="Product" />
+</image-zoom>
+```
+
+### Error handling
+
+```html
+<image-zoom
+  :regular="regular"
+  :zoom="zoom"
+  @regular-error="regular = '/img/fallback.jpg'"
+  @zoom-error="zoom = '/img/fallback-zoom.jpg'">
+</image-zoom>
+```
+
+### Zoom images with a different aspect ratio
+
+The zoom image doesn't need the same aspect ratio as the regular image. The component stays the size of the regular image, so there's no page jump, and the whole zoom image can be panned. A zoom image too short to fill the component is scaled up to cover it.
+
+### Carousels and sliders
+
+Tested and works well with [Vue Carousel](https://www.npmjs.com/package/vue-carousel).
 
 ## Props
 
-The following props can be added to the html above
+| Prop | Type | Default | Description |
+|:-----|:-----|:--------|:------------|
+| `regular` | String | | **Required.** Path to the regular image. |
+| `zoom` | String | `regular` at 2x | **Recommended.** Path to the zoom image. |
+| `regular-webp` | String | | Path to a WebP version of the regular image. |
+| `zoom-webp` | String | `regular-webp` if there's no `zoom` | Path to a WebP version of the zoom image. |
+| `zoom-amount` | Number | Zoom image's natural size, or `2` with no `zoom` | How much to zoom, as a multiple of the regular image's displayed size, e.g. `2`. |
+| `breakpoints` | Array | | Different images at different screen sizes. See [Breakpoints](#breakpoints). |
+| `alt` | String | | Alt text for the regular image. |
+| `img-class` | String | | Class for the regular image, e.g. `img-fluid` in Bootstrap. |
+| `lazyload` | Boolean | `false` | Lazyload the regular image using the native `loading` attribute. |
+| `click-zoom` | Boolean | `false` | Zoom on click instead of hover on mouse devices. |
+| `close-on-click-outside` | Boolean | `true` | Close the zoom when clicking or tapping outside the image. |
+| `edge-offset` | Number | `0` | Fraction of the image (0 to 0.49) at each edge where the zoom is already fully panned to that edge. See [Edge offset](#edge-offset). |
+| `tap-to-close` | Boolean | `false` | Close the zoom with a tap on touch devices instead of a close button. |
+| `touch-zoom-pos` | Array | `[0.5, 0.5]` | Where the zoom starts on touch devices, as `[x, y]` from the top left between 0 and 1. `[0.5, 0.5]` is the centre, `[0, 0]` is the top left. |
+| `close-pos` | String | `top-left` | Position of the close button on touch devices: `top-left`, `top-right`, `top-center`, `bottom-left`, `bottom-right` or `bottom-center`. |
+| `show-message` | Boolean | `true` | Show the zoom message on mouse devices. |
+| `show-message-touch` | Boolean | `true` | Show the zoom message on touch devices. |
+| `message-pos` | String | `bottom` | Position of the zoom message: `top` or `bottom`. |
+| `hover-message` | String | `Hover to zoom` | Message shown on hover zoom. Accepts HTML. |
+| `click-message` | String | `Click to zoom` | Message shown on click zoom. Accepts HTML. |
+| `touch-message` | String | `Tap to zoom` | Message shown on touch devices. Accepts HTML. |
 
-| Property                    | Type    | Default | Description|
-|:----------------------------|:--------|:--------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| alt            | String |    | Alt tag for regular image|
-| breakpoints            | Array |    | Array of objects that allows you to have different images on different screen sizes. Example is shown above, width and regular parameters are needed when using this, adition optional parameters are; regularWebp, zoom, zoomWebp |
-| close-pos            | String | top-left   | Position of the close button on mobile: **top-left, top-right, top-center, bottom-left, bottom-right, bottom-center**|
-| click-zoom            | Boolean | false   | Click to zoom instead of hover to zoom which is default|
-| click-message            | String | <span class="vue-hover-zoom-icon">&#9906;</span> Click to zoom   | To change the message that appears on top of the image before you zoom when click-zoom is set to true, accepts html|
-| hover-message            | String | <span class="vue-hover-zoom-icon">&#9906;</span> Hover to zoom   | To change the message that appears on top of the image before you hover to zoom, accepts html|
-| img-class            | String |    | Class for regular image, e.g. 'img-fluid' in bootstrap|
-| lazyload            | Boolean |  false  | To lazyload the regular image, uses HTML loading attribute |
-| message-pos            | String |  bottom  | Position of the message that appears on top of the image before you zoom: **top, bottom**|
-| regular            | String |    | **Required** Path to the regular image source|
-| regular-webp            | String |    | Path to the regular webp image source, regular option will default as backup if browser doesn't support webp|
-| show-message            | Boolean | true   | Set to false to hide zoom message on non-touch devices |
-| show-message-touch            | Boolean | true   | Set to false to hide zoom message on touch devices |
-| tap-to-close            | Boolean | false   | Set to true to tap to close zoom on mobile, instead of the close button |
-| touch-message            | String | <span class="vue-hover-zoom-icon">&#9906;</span> Tap to zoom   | To change the message that appears on top of the image before you tap to zoom on a touch screen, accepts html|
-| touch-zoom-pos            | Array | [0.5, 0.5]   | X & Y position from top left of where the zoom starts on touch devices e.g. `[0.5, 0.5]` the default, is center, `[0, 0]` is top left. Max value is 1, min value is 0. |
-| zoom            | String |  Regular image  | **Recommended** Path to the zoom image source. If zoom not selected then will use the regular image times by 2.|
-| zoom-amount            | Number |    | Amount you want the zoom image to zoom by e.g. '2' would be 2 times as large as the regular image's dom size. Zoom is defaulted to be the size of the zoom image source, if there is not zoom image source then default zoom is 2|
-| zoom-webp            | String |    | Path to the zoom webp image source, zoom option will default as backup if browser doesn't support webp. zoom-webp will be regular-webp image if nothing is selected for zoom-webp, but there's a regular-webp image|
+> The message props are rendered as HTML, so don't pass them unsanitised user input.
 
 ## Events
 
-The events that the component emits.
-
-| Event                     | Description|
-|:----------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| regular-loaded            | Fires when the regular image has loaded on page|
-| off-zoom            | Fires when you are not zooming |
-| on-zoom            | Fires when you are zooming |
-| zoom-loaded            | Fires when the zoom image has loaded|
-| zoom-loading            | Fires when the zoom image is loading|
+| Event | Payload | Description |
+|:------|:--------|:------------|
+| `regular-loaded` | | The regular image has loaded. |
+| `regular-error` | `Event` | The regular image failed to load. |
+| `zoom-loading` | | The zoom image has started loading. |
+| `zoom-loaded` | | The zoom image has loaded. |
+| `zoom-error` | `Event` | The zoom image failed to load. |
+| `on-zoom` | | Zoom started. |
+| `off-zoom` | | Zoom ended. |
 
 ## License
 
-This project is licensed under the MIT License                                                                                                                             
+[MIT](https://opensource.org/licenses/MIT)
