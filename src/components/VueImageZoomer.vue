@@ -4,7 +4,7 @@
     <slot v-if="showSlot && !lazyload"></slot>
     <div class="vh--outer vh--rel" 
     v-cloak 
-    v-click-outside="isZoom"
+    v-click-outside="clickOutside"
     v-show="!showSlot || lazyload">
         <div class="vh--holder vh--rel vh--flex vh--jc" 
         :class="{'vh--no-click': !rightClick}"
@@ -24,7 +24,7 @@
                     :media="'(min-width:' + breakpoint.width + 'px)'"/>
                 </template>
                 <source v-if="regularWebp" :srcset="regularWebp" type="image/webp">    
-                <img :loading="lazyload ? 'lazy' : 'eager'" :src="regular" :class="imgClass" :alt="alt" @load="$emit('regularLoaded'), showSlot = false" :width="imgWidth" :height="imgHeight"/>
+                <img ref="vue-hover-zs-regular" :loading="lazyload ? 'lazy' : 'eager'" :src="regular" :class="imgClass" :alt="alt" @load="$emit('regularLoaded'), showSlot = false" :width="imgWidth" :height="imgHeight" @error="$emit('regularError', $event)"/>
             </picture>
             <picture v-if="zoomed">       
                 <template v-for="breakpoint in breakpoints" :key="breakpoint.width">
@@ -44,7 +44,7 @@
                     :media="'(min-width:' + breakpoint.width + 'px)'"/>
                 </template>
                 <source v-if="options.zoomWebp" 
-                :src="options.zoomWebp" 
+                :srcset="options.zoomWebp" 
                 type="image/webp"/>
                 <img :src="options.zoom" 
                 class="vh--image vh--abs" 
@@ -98,7 +98,7 @@ export default {
 
     name: 'VueImageZoomer', 
 
-    emits: ['onZoom', 'offZoom', 'regularLoaded', 'zoomLoaded', 'zoomLoading'],
+    emits: ['onZoom', 'offZoom', 'regularLoaded', 'zoomLoaded', 'zoomLoading', 'regularError', 'zoomError'],
 
     directives: {
         clickOutside: {
@@ -110,10 +110,10 @@ export default {
                         binding.value(event, el);
                     }
                 };
-                document.body.addEventListener('click', el.clickOutsideEvent)
+                document.addEventListener('click', el.clickOutsideEvent)
             },
             unmounted (el) {
-                document.body.removeEventListener('click', el.clickOutsideEvent)
+                document.removeEventListener('click', el.clickOutsideEvent)
             },
         }
     },
@@ -131,6 +131,7 @@ export default {
             offsetTop: 0,
             zoomWidth: 0,
             zoomHeight: 0,
+            zoomRatio: 0,
             options:{
                 zoomAmount: 0,
                 zoom: false,
@@ -203,6 +204,14 @@ export default {
             type: Boolean,
             default: true
         },
+        closeOnClickOutside: {
+            type: Boolean,
+            default: true
+        },
+        edgeOffset: {
+            type: Number,
+            default: 0
+        },
     },
 
     watch: { 
@@ -226,18 +235,24 @@ export default {
 
         this.get_options();
 
+        //regular image may have already loaded before mount, e.g. when server side rendered
+        const regularImg = this.$refs['vue-hover-zs-regular'];
+        if(regularImg && regularImg.complete && regularImg.naturalWidth){
+            this.showSlot = false;
+            this.$emit('regularLoaded');
+        }
+
         //check if touch screen
         if('ontouchstart' in window || navigator.msMaxTouchPoints){
             this.touch = true;
         }     
-        this.touchLogic() 
-    },
+        this.touchLogic();
 
-    created() {     
-        window.addEventListener("resize", this.debounce(() => {this.resize()},500));
+        this.resizeHandler = this.debounce(() => {this.resize()},500);
+        window.addEventListener("resize", this.resizeHandler);
     },
     unmounted() {   
-        window.removeEventListener("resize", this.resize());
+        window.removeEventListener("resize", this.resizeHandler);
     },
 
     methods: { 
@@ -271,8 +286,8 @@ export default {
                     if(touchmovement.pageX-sx >= 0){
                       this.x = -1;
                     }
-                    if(touchmovement.pageY-sy <= (this.origY - (this.options.zoomAmount * this.origY))){
-                      this.y = this.origY - (this.options.zoomAmount * this.origY); 
+                    if(touchmovement.pageY-sy <= (this.origY - this.zoomHeight)){
+                      this.y = this.origY - this.zoomHeight; 
                     }
                     if(touchmovement.pageY-sy >= 0){
                       this.y = -1;
@@ -340,10 +355,22 @@ export default {
             };
             img.src = "data:image/webp;base64," + kTestImages[feature];
         },
-        loadImage(src, callback) {
+        loadImage(src, callback, errorCallback) {
             const sprite = new Image();
             sprite.onload = callback;
+            sprite.onerror = errorCallback;
             sprite.src = src;
+        },
+        setZoomSize(){
+            //use the zoom image's own aspect ratio so zoom images with a different ratio can be fully panned
+            const ratio = this.zoomRatio || (this.origY / this.origX);
+            this.zoomWidth = this.origX * this.options.zoomAmount;
+            this.zoomHeight = this.zoomWidth * ratio;
+            //make sure the zoom image always covers the container
+            if(this.zoomHeight < this.origY){
+                this.zoomHeight = this.origY;
+                this.zoomWidth = this.origY / ratio;
+            }
         },
         loadZoom(){
             //get width and height of container
@@ -351,8 +378,7 @@ export default {
 
             //set zoom width if zoom amount option applied
             if(this.options.zoomAmount != 0){
-                this.zoomWidth = this.origX * this.options.zoomAmount;
-                this.zoomHeight = this.origY * this.options.zoomAmount;
+                this.setZoomSize();
                 if(this.touch){
                   this.mobilePos();
                 }
@@ -362,11 +388,7 @@ export default {
             if(!this.loaded){
                 this.zoomLoad()
             } else {
-                this.zoomed = true;       
-                //get zoom amount for default zoom again as screen size may have changed
-                if(this.options.zoomAmount == 0){
-                  this.options.zoomAmount = this.zoomWidth / this.origX;
-                }
+                this.zoomed = true;
             }
         },
         zoomLoad(){
@@ -402,12 +424,12 @@ export default {
                 }
             }
             this.loadImage(zoomToLoad,(src) => {
+                this.zoomRatio = src.target.height / src.target.width;
                 if(this.options.zoomAmount == 0){
                     //if zoom amount not set, work it out from loaded zoom image width
-                    this.zoomWidth = src.target.width;
-                    this.zoomHeight = src.target.height;
                     this.options.zoomAmount = src.target.width / this.origX;
                 }
+                this.setZoomSize();
                 this.loaded = true;
                 this.loading = false; 
                 this.$emit('zoomLoaded');
@@ -415,10 +437,13 @@ export default {
                     this.zoomed = true; 
                     this.mobilePos();
                 }
+            }, (e) => {
+                this.loading = false;
+                this.$emit('zoomError', e);
             });
         },
         isZoom(type, action){
-            if((action == 'hover' && !this.clickZoom && !this.touch) || (action == 'click' && (this.clickZoom || this.touch)) || typeof type === 'object'){                
+            if((action == 'hover' && !this.clickZoom && !this.touch) || (action == 'click' && (this.clickZoom || this.touch))){                
                 //set zoomed to false
                 this.zoomed = false;
 
@@ -430,6 +455,17 @@ export default {
                     this.$emit('offZoom');
                 }
             }
+        },
+        clickOutside(){
+            if(this.closeOnClickOutside && this.zoomed){
+                this.zoomed = false;
+                this.$emit('offZoom');
+            }
+        },
+        edgePos(pos){
+            //stretch the inner area so the edges of the zoom image are reached before the cursor hits the edge of the container
+            const offset = Math.min(Math.max(this.edgeOffset, 0), 0.49);
+            return Math.min(Math.max((pos - offset) / (1 - 2 * offset), 0), 1);
         },
         mobilePos(){
             let X = (this.zoomWidth - this.origX) * this.touchZoomPos[0];
@@ -455,8 +491,8 @@ export default {
                     this.offset();
                     this.zoomLoad();
                 } else {
-                    this.x = (e.pageX - this.offsetLeft) * (this.options.zoomAmount - 1);
-                    this.y = (e.pageY - this.offsetTop) * (this.options.zoomAmount - 1);
+                    this.x = this.edgePos((e.pageX - this.offsetLeft) / this.origX) * (this.zoomWidth - this.origX);
+                    this.y = this.edgePos((e.pageY - this.offsetTop) / this.origY) * (this.zoomHeight - this.origY);
                 }
             }
         }

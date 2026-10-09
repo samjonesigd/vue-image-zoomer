@@ -1,6 +1,6 @@
 {
   "name": "vue-image-zoomer",
-  "version": "2.4.4",
+  "version": "2.5.0",
   "description": "Repsonsive image zoom component for Vue.js 3, that also works on touch devices. Legacy versions available for Vue 2.",
   "keywords": [
     "vue",
@@ -15,14 +15,20 @@
     "typescript"
   ],
   "main": "./dist/vue-image-zoomer.umd.js",
-  "module": "./dist/vue-image-zoomer.es.js",
+  "module": "./dist/vue-image-zoomer.mjs",
   "types": "./dist/vue-image-zoomer.d.ts",
-  "export": {
+  "exports": {
     ".": {
-      "import": "./dist/vue-image-zoomer.es.js",
+      "types": "./dist/vue-image-zoomer.d.ts",
+      "import": "./dist/vue-image-zoomer.mjs",
       "require": "./dist/vue-image-zoomer.umd.js"
-    }
+    },
+    "./style.css": "./dist/style.css",
+    "./dist/*": "./dist/*"
   },
+  "sideEffects": [
+    "*.css"
+  ],
   "author": "Samuel Jones <hello@samueljon.es>",
   "license": "MIT",
   "homepage": "https://samueljon.es/vue-image-zoomer",
@@ -32,16 +38,16 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build && vue-tsc --declaration --emitDeclarationOnly --outFile dist/vue-image-zoomer.d.ts",
+    "build": "vite build && cp types/vue-image-zoomer.d.ts dist/vue-image-zoomer.d.ts",
     "preview": "vite preview"
   },
-  "dependencies": {
+  "peerDependencies": {
     "vue": "^3.2.25"
   },
   "devDependencies": {
     "@babel/types": "^7.25.2",
     "@vitejs/plugin-vue": "^5.2.1",
     "vite": "^6.0.11",
-    "vue-tsc": "^2.0.19"
+    "vue": "^3.2.25"
   }
 }

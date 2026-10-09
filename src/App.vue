@@ -164,6 +164,70 @@
               zoom: 'img/sky-zoom-inverted.jpg'
             }           
           ]"/>
+
+      <h2 class="w-100 text-center mt-5 pt-3 border-top">
+        Edge offset
+      </h2>
+      <p>Reach the edges of the zoom image before the cursor reaches the edge of the image.</p>
+<code>
+<pre class="bg-light border rounded p-2 d-inline-block">
+&lt;vue-image-zoom 
+    regular="img/sky.jpg" 
+    zoom="img/sky-zoom.jpg" 
+    :edge-offset="0.15"
+    img-class="img-fluid"
+    alt="Sky" /&gt;
+</pre>
+</code>
+      <vue-image-zoomer 
+        regular="/img/sky.jpg" 
+        zoom="/img/sky-zoom.jpg" 
+        :edge-offset="0.15"
+        img-class="img-fluid"
+        alt="Sky" />
+
+      <h2 class="w-100 text-center mt-5 pt-3 border-top">
+        Keep zooming when clicking outside
+      </h2>
+<code>
+<pre class="bg-light border rounded p-2 d-inline-block">
+&lt;vue-image-zoom 
+    regular="img/grass.jpg" 
+    zoom="img/grass-zoom.jpg" 
+    :click-zoom="true"
+    :close-on-click-outside="false"
+    img-class="img-fluid"
+    alt="Grass" /&gt;
+</pre>
+</code>
+      <vue-image-zoomer 
+        regular="/img/grass.jpg" 
+        zoom="/img/grass-zoom.jpg" 
+        :click-zoom="true"
+        :close-on-click-outside="false"
+        img-class="img-fluid"
+        alt="Grass" />
+
+      <h2 class="w-100 text-center mt-5 pt-3 border-top">
+        Error handling
+      </h2>
+<code>
+<pre class="bg-light border rounded p-2 d-inline-block">
+&lt;vue-image-zoom 
+    :regular="regularSrc" 
+    :zoom="zoomSrc" 
+    img-class="img-fluid"
+    @regular-error="regularSrc = 'img/balls.jpg'"
+    @zoom-error="zoomSrc = 'img/balls-zoom.jpg'" /&gt;
+</pre>
+</code>
+      <vue-image-zoomer 
+        :regular="regularSrc" 
+        :zoom="zoomSrc" 
+        img-class="img-fluid"
+        alt="Balls"
+        @regular-error="regularSrc = '/img/balls.jpg'"
+        @zoom-error="zoomSrc = '/img/balls-zoom.jpg'" />
     </div>      
   </div>
 </template>
@@ -180,6 +244,8 @@ export default {
   data() {
     return { 
       zoom: false,
+      regularSrc: '/img/missing.jpg',
+      zoomSrc: '/img/missing-zoom.jpg',
     }
   },
   methods:{

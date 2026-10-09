@@ -45,6 +45,23 @@ export default {
 }
 ```
 
+### Nuxt 3
+
+Create a plugin, e.g. `plugins/vue-image-zoomer.ts`:
+
+```js
+import VueImageZoomer from 'vue-image-zoomer';
+import 'vue-image-zoomer/dist/style.css';
+
+export default defineNuxtPlugin((nuxtApp) => {
+  nuxtApp.vueApp.use(VueImageZoomer);
+});
+```
+
+### TypeScript
+
+Type declarations are included, including the `VueImageZoomerProps` and `VueImageZoomerBreakpoint` types.
+
 Also comes with a UMD version and css file if not using a module compiler in the dist folder.
 
 ## Usage examples
@@ -133,6 +150,10 @@ Like without breakpoints, if using breakpoints, the zoom parameters aren't requi
 	]" />
 ```
 
+## Zoom images with a different aspect ratio
+
+The zoom image does not need the same aspect ratio as the regular image. The container stays the size of the regular image (so there's no page jump), and the whole zoom image can be panned. If the zoom image would be too short to fill the container it is scaled up to cover it.
+
 ## All Options
 
 The following props can be added to the html above
@@ -143,7 +164,9 @@ The following props can be added to the html above
 | breakpoints            | Array |    | Array of objects that allows you to have different images on different screen sizes. Example is shown above, width and regular parameters are needed when using this, adition optional parameters are; regularWebp, zoom, zoomWebp |
 | close-pos            | String | top-left   | Position of the close button on mobile: **top-left, top-right, top-center, bottom-left, bottom-right, bottom-center**|
 | click-zoom            | Boolean | false   | Click to zoom instead of hover to zoom which is default|
+| close-on-click-outside            | Boolean | true   | Set to false to keep zooming when clicking/tapping outside of the image|
 | click-message            | String | <span class="vue-hover-zoom-icon">&#9906;</span> Click to zoom   | To change the message that appears on top of the image before you zoom when click-zoom is set to true, accepts html|
+| edge-offset            | Number | 0   | Fraction (0 - 0.49) of the image width/height at each edge where the zoom image is already fully panned to that edge, so users don't have to move the cursor all the way to the edge of the image to see the edges of the zoom image. e.g. `0.1`|
 | hover-message            | String | <span class="vue-hover-zoom-icon">&#9906;</span> Hover to zoom   | To change the message that appears on top of the image before you hover to zoom, accepts html|
 | img-class            | String |    | Class for regular image, e.g. 'img-fluid' in bootstrap|
 | img-height            | Number |    | img height attribute for improved lighthouse performance |
@@ -173,6 +196,8 @@ The events that the component emits.
 | on-zoom            | Fires when you are zooming |
 | zoom-loaded            | Fires when the zoom image has loaded|
 | zoom-loading            | Fires when the zoom image is loading|
+| regular-error            | Fires when the regular image fails to load, passes the error event|
+| zoom-error            | Fires when the zoom image fails to load, passes the error event|
 
 ## License
 
