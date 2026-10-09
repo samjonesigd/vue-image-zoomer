@@ -1,10 +1,10 @@
-import { nextTick as y, resolveDirective as w, openBlock as r, createElementBlock as l, Fragment as u, renderSlot as b, createCommentVNode as m, withDirectives as k, createElementVNode as d, normalizeClass as a, renderList as c, normalizeStyle as g, createVNode as f, Transition as z, withCtx as v, withModifiers as W, vShow as Z } from "vue";
+import { nextTick as w, resolveDirective as y, openBlock as n, createElementBlock as r, Fragment as u, renderSlot as b, createCommentVNode as m, withDirectives as k, createElementVNode as d, normalizeClass as a, renderList as c, normalizeStyle as g, createVNode as f, Transition as z, withCtx as v, withModifiers as L, vShow as W } from "vue";
 const x = (e, o) => {
   const s = e.__vccOpts || e;
   for (const [i, t] of o)
     s[i] = t;
   return s;
-}, _ = {
+}, Z = {
   name: "VueImageZoomer",
   emits: ["onZoom", "offZoom", "regularLoaded", "zoomLoaded", "zoomLoading", "regularError", "zoomError"],
   directives: {
@@ -43,7 +43,10 @@ const x = (e, o) => {
       webp_supported: !1,
       cx: 0,
       cy: 0,
-      showSlot: !0
+      showSlot: !0,
+      zoomPending: !1,
+      zoomFailed: !1,
+      openOnLoad: !1
     };
   },
   props: {
@@ -128,7 +131,7 @@ const x = (e, o) => {
       s && (this.webp_supported = !0);
     }), this.get_options();
     const e = this.$refs["vue-hover-zs-regular"];
-    e && e.complete && e.naturalWidth && (this.showSlot = !1, this.$emit("regularLoaded")), ("ontouchstart" in window || navigator.msMaxTouchPoints) && (this.touch = !0), this.touchLogic(), this.resizeHandler = this.debounce(() => {
+    e && e.complete && e.naturalWidth && (this.showSlot = !1, this.$emit("regularLoaded")), this.touch = this.isTouch(), this.touchLogic(), this.resizeHandler = this.debounce(() => {
       this.resize();
     }, 500), window.addEventListener("resize", this.resizeHandler);
   },
@@ -137,7 +140,7 @@ const x = (e, o) => {
   },
   methods: {
     async touchLogic() {
-      await y();
+      await w();
       let e, o, s = !1;
       this.$refs["vue-hover-zs"].addEventListener("touchstart", (i) => {
         if (this.zoomed) {
@@ -164,8 +167,17 @@ const x = (e, o) => {
         clearTimeout(s), s = setTimeout(() => e.apply(t, i), o);
       };
     },
+    isTouch() {
+      if (window.matchMedia) {
+        if (window.matchMedia("(hover: none)").matches)
+          return !0;
+        if (window.matchMedia("(hover: hover)").matches)
+          return !1;
+      }
+      return "ontouchstart" in window || !!navigator.msMaxTouchPoints;
+    },
     get_options() {
-      this.options.zoomAmount = this.zoomAmount, this.options.zoom = this.zoom, this.options.zoomWebp = this.zoomWebp, this.zoom || (this.options.zoom = this.regular, this.zoomWebp || (this.options.zoomWebp = this.regularWebp), this.options.zoomAmount = this.zoomAmount || 2), this.resize();
+      this.options.zoomAmount = this.zoomAmount, this.options.zoom = this.zoom, this.options.zoomWebp = this.zoomWebp, this.zoom || (this.options.zoom = this.regular, this.zoomWebp || (this.options.zoomWebp = this.regularWebp), this.options.zoomAmount = this.zoomAmount || 2), this.zoomFailed = !1, this.resize();
     },
     resize() {
       this.zoomed = !1, this.loaded = !1;
@@ -193,23 +205,25 @@ const x = (e, o) => {
       this.zoomWidth = this.origX * this.options.zoomAmount, this.zoomHeight = this.zoomWidth * e, this.zoomHeight < this.origY && (this.zoomHeight = this.origY, this.zoomWidth = this.origY / e);
     },
     loadZoom() {
-      this.offset(), this.options.zoomAmount != 0 && (this.setZoomSize(), this.touch && this.mobilePos()), this.loaded ? this.zoomed = !0 : this.zoomLoad();
+      this.offset(), this.options.zoomAmount != 0 && (this.setZoomSize(), this.touch && this.mobilePos()), this.loaded ? this.zoomed = !0 : (this.openOnLoad = !0, this.loading = !0, this.$emit("zoomLoading"), this.zoomLoad());
     },
     zoomLoad() {
-      (!this.clickZoom || this.touch) && (this.loading = !0, this.$emit("zoomLoading"));
+      if (this.zoomPending)
+        return;
+      this.zoomPending = !0;
       const e = this.breakpoints && this.breakpoints.find((i) => window.innerWidth >= i.width), o = e ? this.breakpointZoom(e) : this.options;
       let s = o.zoom;
       this.webp_supported && o.zoomWebp && (s = o.zoomWebp), this.loadImage(s, (i) => {
-        this.zoomRatio = i.target.height / i.target.width, this.options.zoomAmount == 0 && (this.options.zoomAmount = i.target.width / this.origX), this.setZoomSize(), this.loaded = !0, this.loading = !1, this.$emit("zoomLoaded"), (!this.clickZoom || this.touch) && (this.zoomed = !0, this.mobilePos());
+        this.zoomRatio = i.target.height / i.target.width, this.options.zoomAmount == 0 && (this.options.zoomAmount = i.target.width / this.origX), this.setZoomSize(), this.zoomPending = !1, this.loaded = !0, this.loading = !1, this.$emit("zoomLoaded"), this.openOnLoad && (this.openOnLoad = !1, this.zoomed = !0, this.mobilePos());
       }, (i) => {
-        this.loading = !1, this.$emit("zoomError", i);
+        this.zoomPending = !1, this.zoomFailed = !0, this.openOnLoad = !1, this.loading = !1, this.$emit("zoomError", i);
       });
     },
     isZoom(e, o) {
-      (o == "hover" && !this.clickZoom && !this.touch || o == "click" && (this.clickZoom || this.touch)) && (this.zoomed = !1, e == !0 ? (this.loadZoom(), this.$emit("onZoom")) : this.$emit("offZoom"));
+      (o == "hover" && !this.clickZoom && !this.touch || o == "click" && (this.clickZoom || this.touch)) && (this.zoomed = !1, e == !0 ? (this.loadZoom(), this.$emit("onZoom")) : (this.openOnLoad = !1, this.loading = !1, this.$emit("offZoom")));
     },
     clickOutside() {
-      this.closeOnClickOutside && this.zoomed && (this.zoomed = !1, this.$emit("offZoom"));
+      this.closeOnClickOutside && (this.zoomed || this.openOnLoad) && (this.zoomed = !1, this.openOnLoad = !1, this.loading = !1, this.$emit("offZoom"));
     },
     edgePos(e) {
       const o = Math.min(Math.max(this.edgeOffset, 0), 0.49);
@@ -223,49 +237,49 @@ const x = (e, o) => {
       this.origX = parseFloat(this.$refs["vue-hover-zs"].offsetWidth), this.origY = parseFloat(this.$refs["vue-hover-zs"].offsetHeight);
     },
     mousePos(e) {
-      this.offsetLeft = window.pageXOffset + this.$refs["vue-hover-zs"].getBoundingClientRect().left, this.offsetTop = window.pageYOffset + this.$refs["vue-hover-zs"].getBoundingClientRect().top, !this.touch && !this.loading && (this.loaded ? (this.x = this.edgePos((e.pageX - this.offsetLeft) / this.origX) * (this.zoomWidth - this.origX), this.y = this.edgePos((e.pageY - this.offsetTop) / this.origY) * (this.zoomHeight - this.origY)) : (this.offset(), this.zoomLoad()));
+      this.offsetLeft = window.pageXOffset + this.$refs["vue-hover-zs"].getBoundingClientRect().left, this.offsetTop = window.pageYOffset + this.$refs["vue-hover-zs"].getBoundingClientRect().top, !this.touch && !this.loading && (this.loaded ? (this.x = this.edgePos((e.pageX - this.offsetLeft) / this.origX) * (this.zoomWidth - this.origX), this.y = this.edgePos((e.pageY - this.offsetTop) / this.origY) * (this.zoomHeight - this.origY)) : this.zoomFailed || (this.offset(), this.clickZoom || (this.openOnLoad = !0, this.loading = !0, this.$emit("zoomLoading")), this.zoomLoad()));
     }
   }
-}, A = { class: "vh--outer vh--rel" }, L = ["srcset", "media"], M = ["srcset", "media"], P = ["srcset"], T = ["loading", "src", "alt", "width", "height"], H = { key: 0 }, S = ["srcset", "media"], C = ["srcset", "media"], Y = ["srcset"], X = ["src"], E = ["src"], O = ["innerHTML"], B = ["innerHTML"], I = ["innerHTML"], V = {
+}, _ = { class: "vh--outer vh--rel" }, A = ["srcset", "media"], P = ["srcset", "media"], M = ["srcset"], T = ["loading", "src", "alt", "width", "height"], H = { key: 0 }, O = ["srcset", "media"], S = ["srcset", "media"], C = ["srcset"], Y = ["src"], X = ["src"], E = ["innerHTML"], B = ["innerHTML"], I = ["innerHTML"], V = {
   key: 1,
   class: "vh--loading-o vh--abs vh--flex vh--jc vh--ai"
 };
-function N(e, o, s, i, t, n) {
-  const p = w("click-outside");
-  return r(), l(u, null, [
+function F(e, o, s, i, t, l) {
+  const p = y("click-outside");
+  return n(), r(u, null, [
     t.showSlot && !s.lazyload ? b(e.$slots, "default", { key: 0 }) : m("", !0),
-    k((r(), l("div", A, [
+    k((n(), r("div", _, [
       d("div", {
         class: a(["vh--holder vh--rel vh--flex vh--jc", { "vh--no-click": !s.rightClick }]),
-        onMouseenter: o[2] || (o[2] = (h) => n.isZoom(!0, "hover")),
-        onMouseleave: o[3] || (o[3] = (h) => n.isZoom(!1, "hover")),
-        onMousemove: o[4] || (o[4] = (...h) => n.mousePos && n.mousePos(...h)),
+        onMouseenter: o[2] || (o[2] = (h) => l.isZoom(!0, "hover")),
+        onMouseleave: o[3] || (o[3] = (h) => l.isZoom(!1, "hover")),
+        onMousemove: o[4] || (o[4] = (...h) => l.mousePos && l.mousePos(...h)),
         ref: "vue-hover-zs",
-        onClick: o[5] || (o[5] = (h) => n.isZoom(!t.zoomed, "click"))
+        onClick: o[5] || (o[5] = (h) => l.isZoom(!t.zoomed, "click"))
       }, [
         d("picture", {
           class: a({ "vh--none": t.zoomed })
         }, [
-          (r(!0), l(u, null, c(s.breakpoints, (h) => (r(), l(u, {
+          (n(!0), r(u, null, c(s.breakpoints, (h) => (n(), r(u, {
             key: h.width
           }, [
-            h.regularWebp ? (r(), l("source", {
+            h.regularWebp ? (n(), r("source", {
               key: 0,
               srcset: h.regularWebp,
               type: "image/webp",
               media: "(min-width:" + h.width + "px)"
-            }, null, 8, L)) : m("", !0),
-            h.regular ? (r(), l("source", {
+            }, null, 8, A)) : m("", !0),
+            h.regular ? (n(), r("source", {
               key: 1,
               srcset: h.regular,
               media: "(min-width:" + h.width + "px)"
-            }, null, 8, M)) : m("", !0)
+            }, null, 8, P)) : m("", !0)
           ], 64))), 128)),
-          s.regularWebp ? (r(), l("source", {
+          s.regularWebp ? (n(), r("source", {
             key: 0,
             srcset: s.regularWebp,
             type: "image/webp"
-          }, null, 8, P)) : m("", !0),
+          }, null, 8, M)) : m("", !0),
           d("img", {
             ref: "vue-hover-zs-regular",
             loading: s.lazyload ? "lazy" : "eager",
@@ -278,50 +292,50 @@ function N(e, o, s, i, t, n) {
             onError: o[1] || (o[1] = (h) => e.$emit("regularError", h))
           }, null, 42, T)
         ], 2),
-        t.zoomed ? (r(), l("picture", H, [
-          (r(!0), l(u, null, c(s.breakpoints, (h) => (r(), l(u, {
+        t.zoomed ? (n(), r("picture", H, [
+          (n(!0), r(u, null, c(s.breakpoints, (h) => (n(), r(u, {
             key: h.width
           }, [
-            n.breakpointZoom(h).zoomWebp ? (r(), l("source", {
+            l.breakpointZoom(h).zoomWebp ? (n(), r("source", {
               key: 0,
-              srcset: n.breakpointZoom(h).zoomWebp,
+              srcset: l.breakpointZoom(h).zoomWebp,
               type: "image/webp",
               media: "(min-width:" + h.width + "px)"
-            }, null, 8, S)) : m("", !0),
-            n.breakpointZoom(h).zoom ? (r(), l("source", {
+            }, null, 8, O)) : m("", !0),
+            l.breakpointZoom(h).zoom ? (n(), r("source", {
               key: 1,
-              srcset: n.breakpointZoom(h).zoom,
+              srcset: l.breakpointZoom(h).zoom,
               media: "(min-width:" + h.width + "px)"
-            }, null, 8, C)) : m("", !0)
+            }, null, 8, S)) : m("", !0)
           ], 64))), 128)),
-          t.options.zoomWebp ? (r(), l("source", {
+          t.options.zoomWebp ? (n(), r("source", {
             key: 0,
             srcset: t.options.zoomWebp,
             type: "image/webp"
-          }, null, 8, Y)) : m("", !0),
-          t.touch ? (r(), l("img", {
+          }, null, 8, C)) : m("", !0),
+          t.touch ? (n(), r("img", {
             key: 2,
             src: t.options.zoom,
             class: "vh--image vh--abs",
             style: g("width:" + t.zoomWidth + "px;transform:" + t.touchPosition)
-          }, null, 12, E)) : (r(), l("img", {
+          }, null, 12, X)) : (n(), r("img", {
             key: 1,
             src: t.options.zoom,
             class: "vh--image vh--abs",
             style: g({ width: t.zoomWidth + "px", transform: "translate(-" + t.x + "px,-" + t.y + "px)" })
-          }, null, 12, X))
+          }, null, 12, Y))
         ])) : m("", !0),
         f(z, { name: "VueHoverfade" }, {
           default: v(() => [
-            !t.zoomed && !t.loading && !s.clickZoom && !t.touch && s.showMessage ? (r(), l("div", {
+            !t.zoomed && !t.loading && !s.clickZoom && !t.touch && s.showMessage ? (n(), r("div", {
               key: 0,
               class: a(["vh--message vh--abs vh--flex vh--jc vh--ai", "vh--message-" + s.messagePos]),
               innerHTML: s.hoverMessage
-            }, null, 10, O)) : !t.zoomed && !t.loading && !t.touch && s.showMessage ? (r(), l("div", {
+            }, null, 10, E)) : !t.zoomed && !t.loading && !t.touch && s.showMessage ? (n(), r("div", {
               key: 1,
               class: a(["vh--message vh--abs vh--flex vh--jc vh--ai", "vh--message-" + s.messagePos]),
               innerHTML: s.clickMessage
-            }, null, 10, B)) : !t.zoomed && !t.loading && t.touch && s.showMessageTouch ? (r(), l("div", {
+            }, null, 10, B)) : !t.zoomed && !t.loading && t.touch && s.showMessageTouch ? (n(), r("div", {
               key: 2,
               class: a(["vh--message vh--abs vh--flex vh--jc vh--ai", "vh--message-" + s.messagePos]),
               innerHTML: s.touchMessage
@@ -332,12 +346,12 @@ function N(e, o, s, i, t, n) {
       ], 34),
       f(z, { name: "VueHoverfade" }, {
         default: v(() => [
-          t.touch && t.zoomed && t.loaded && !s.tapToClose ? (r(), l("div", {
+          t.touch && t.zoomed && t.loaded && !s.tapToClose ? (n(), r("div", {
             key: 0,
             class: a(["vh--close vh--abs vh--flex vh--jc vh--ai", "vh--" + s.closePos]),
-            onClick: o[6] || (o[6] = W((h) => (t.zoomed = !1, e.$emit("offZoom")), ["stop"])),
+            onClick: o[6] || (o[6] = L((h) => (t.zoomed = !1, e.$emit("offZoom")), ["stop"])),
             innerHTML: "×"
-          }, null, 2)) : t.loading ? (r(), l("div", V, o[7] || (o[7] = [
+          }, null, 2)) : t.loading ? (n(), r("div", V, o[7] || (o[7] = [
             d("div", {
               class: "vh--loading",
               innerHTML: "◠"
@@ -347,17 +361,17 @@ function N(e, o, s, i, t, n) {
         _: 1
       })
     ])), [
-      [p, n.clickOutside],
-      [Z, !t.showSlot || s.lazyload]
+      [p, l.clickOutside],
+      [W, !t.showSlot || s.lazyload]
     ])
   ], 64);
 }
-const R = /* @__PURE__ */ x(_, [["render", N]]), D = {
+const N = /* @__PURE__ */ x(Z, [["render", F]]), j = {
   install: (e, o) => {
-    e.component("VueImageZoomer", R);
+    e.component("VueImageZoomer", N);
   }
 };
 export {
-  R as VueImageZoomer,
-  D as default
+  N as VueImageZoomer,
+  j as default
 };

@@ -135,7 +135,10 @@ export default {
             webp_supported: false,
             cx: 0,
             cy: 0,
-            showSlot: true
+            showSlot: true,
+            zoomPending: false,
+            zoomFailed: false,
+            openOnLoad: false
         };
     },
 
@@ -235,10 +238,7 @@ export default {
             this.$emit('regularLoaded');
         }
 
-        //check if touch screen
-        if('ontouchstart' in window || navigator.msMaxTouchPoints){
-            this.touch = true;
-        }     
+        this.touch = this.isTouch();
         this.touchLogic();
 
         this.resizeHandler = this.debounce(() => {this.resize()},500);
@@ -314,6 +314,18 @@ export default {
                 timeout = setTimeout(() => callback.apply(context, args), wait);
             };
         },
+        isTouch(){
+            //use touch mode only when the main input can't hover, so touchscreen laptops still hover zoom with a mouse
+            if(window.matchMedia){
+                if(window.matchMedia('(hover: none)').matches){
+                    return true;
+                }
+                if(window.matchMedia('(hover: hover)').matches){
+                    return false;
+                }
+            }
+            return 'ontouchstart' in window || !!navigator.msMaxTouchPoints;
+        },
         get_options(){      
             this.options.zoomAmount = this.zoomAmount;
             this.options.zoom = this.zoom;
@@ -327,6 +339,7 @@ export default {
                 }
                 this.options.zoomAmount = this.zoomAmount || 2;
             }
+            this.zoomFailed = false;
             this.resize();      
         },
         resize(){
@@ -385,16 +398,20 @@ export default {
 
             //only do this if we havent loaded the zoom before
             if(!this.loaded){
-                this.zoomLoad()
+                //zoom once the image has loaded, it may already be loading from a mouse move
+                this.openOnLoad = true;
+                this.loading = true;
+                this.$emit('zoomLoading');
+                this.zoomLoad();
             } else {
                 this.zoomed = true;
             }
         },
         zoomLoad(){
-            if(!this.clickZoom || this.touch){
-                this.loading = true;
-                this.$emit('zoomLoading');
+            if(this.zoomPending){
+                return;
             }
+            this.zoomPending = true;
             //load zoom image
             //use the first matching breakpoint, the same as the picture element does
             const breakpoint = this.breakpoints && this.breakpoints.find((item) => window.innerWidth >= item.width);
@@ -410,14 +427,19 @@ export default {
                     this.options.zoomAmount = src.target.width / this.origX;
                 }
                 this.setZoomSize();
+                this.zoomPending = false;
                 this.loaded = true;
                 this.loading = false; 
                 this.$emit('zoomLoaded');
-                if(!this.clickZoom || this.touch){
+                if(this.openOnLoad){
+                    this.openOnLoad = false;
                     this.zoomed = true; 
                     this.mobilePos();
                 }
             }, (e) => {
+                this.zoomPending = false;
+                this.zoomFailed = true;
+                this.openOnLoad = false;
                 this.loading = false;
                 this.$emit('zoomError', e);
             });
@@ -432,13 +454,17 @@ export default {
                     this.loadZoom();
                     this.$emit('onZoom');
                 } else {
+                    this.openOnLoad = false;
+                    this.loading = false;
                     this.$emit('offZoom');
                 }
             }
         },
         clickOutside(){
-            if(this.closeOnClickOutside && this.zoomed){
+            if(this.closeOnClickOutside && (this.zoomed || this.openOnLoad)){
                 this.zoomed = false;
+                this.openOnLoad = false;
+                this.loading = false;
                 this.$emit('offZoom');
             }
         },
@@ -468,8 +494,17 @@ export default {
             //set x and y of mouse in the container for the transform in style bind
             if(!this.touch && !this.loading){ 
                 if(!this.loaded){         
-                    this.offset();
-                    this.zoomLoad();
+                    //preload the zoom image, unless it has already failed to load
+                    if(!this.zoomFailed){
+                        this.offset();
+                        //on hover zoom the mouse is already over the image so zoom once loaded
+                        if(!this.clickZoom){
+                            this.openOnLoad = true;
+                            this.loading = true;
+                            this.$emit('zoomLoading');
+                        }
+                        this.zoomLoad();
+                    }
                 } else {
                     this.x = this.edgePos((e.pageX - this.offsetLeft) / this.origX) * (this.zoomWidth - this.origX);
                     this.y = this.edgePos((e.pageY - this.offsetTop) / this.origY) * (this.zoomHeight - this.origY);

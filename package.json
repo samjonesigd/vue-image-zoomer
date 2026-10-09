@@ -34,7 +34,7 @@
   "homepage": "https://samueljon.es/vue-image-zoomer",
   "repository": {
     "type": "git",
-    "url": "git@github.com:samjonesigd/vue-image-zoom.git"
+    "url": "git+https://github.com/samjonesigd/vue-image-zoomer.git"
   },
   "scripts": {
     "dev": "vite",
